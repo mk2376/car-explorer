@@ -1,7 +1,7 @@
 <template>
-    <BabylonGame
-      active
-    ></BabylonGame>
+  <div>
+    <BabylonGame active></BabylonGame>
+  </div>
 </template>
 
 <script lang="ts">

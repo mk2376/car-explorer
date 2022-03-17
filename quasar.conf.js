@@ -73,6 +73,10 @@ module.exports = configure(function (ctx) {
       chainWebpack(/* chain */) {
         //
       },
+
+      extendWebpack(cfg) {
+        cfg.resolve.fallback = { fs: false, path: false };
+      },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer

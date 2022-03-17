@@ -1,28 +1,29 @@
 <template>
-  <div>
-    <h3>BabylonGame</h3>
-    <canvas></canvas>
-  </div>
+  <canvas></canvas>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { CarExplorer } from '../BabylonGame/CarExplorer';
+import { Game } from '../BabylonGame/Game';
 
 export default defineComponent({
   name: 'BabylonGame',
   mounted() {
-    const canvas = document.querySelector("canvas")!;
-    new CarExplorer(canvas);
-  }
+    const canvas = document.querySelector('canvas')!;
+    canvas.classList.add('absolute-full');
+    new Game(canvas);
+  },
 });
 </script>
 
 <style scoped>
-
 canvas {
-  width: 70%;
-  height: 70%;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  outline: none;
 }
-
 </style>
