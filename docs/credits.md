@@ -9,7 +9,7 @@
 
 - Foliage: https://craftpix.net/freebies/free-desert-plant-3d-low-poly-models/?num=1&count=13&sq=desert%20plants&pos=0
 - Billboard: https://sketchfab.com/3d-models/simple-low-poly-billboard-16-9-86c40bba17b843a090fb380e8b829eab
-- Rocks: https://sketchfab.com/3d-models/desert-rock-fixed-pack-00c4468f1bca48509d7d2bd66b564cbc
+- Rocks: https://sketchfab.com/3d-models/desert-planet-colony-day-4-final-3605caa8cfef4de987cce1daaa7bde38
 - Stone pillars and bricks: https://sketchfab.com/3d-models/hand-painter-stylized-stone-bricks-low-poly-a67e5c3511b345e3aea4bf074b029149
 
 #### Adventure

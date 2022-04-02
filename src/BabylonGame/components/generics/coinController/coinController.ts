@@ -1,10 +1,11 @@
 import { AbstractMesh, AssetContainer, IAction } from '@babylonjs/core';
 import { actionHelper } from '../actionsController/Helper';
+import { AdventureHud } from '../ui/adventureUi';
 import { Hud } from '../ui/ui';
 import { addSphereCollider, randomLocation } from './collider';
 
 export class coinController {
-  protected _ui: Hud;
+  protected _ui: AdventureHud;
 
   protected _coinMeshName: string;
   protected _playerMesh: AbstractMesh;
@@ -19,7 +20,7 @@ export class coinController {
   protected randomLocation = randomLocation;
 
   constructor(
-    ui: Hud,
+    ui: AdventureHud,
     coinMeshName: string,
     playerMesh: AbstractMesh,
     numOfCoins: number
@@ -29,7 +30,7 @@ export class coinController {
     this._playerMesh = playerMesh;
     this._numOfCoins = numOfCoins;
 
-    this._ui.observers.crystal.notifyObservers([
+    this._ui.observers.crystal!.notifyObservers([
       this._coinsCollected,
       this._numOfCoins,
     ]);
@@ -88,7 +89,7 @@ export class coinController {
         this._playerMesh.actionManager?.unregisterAction(action);
         this._coinsCollected++;
         this.updateStatus();
-        this._ui.observers.crystal.notifyObservers([
+        this._ui.observers.crystal!.notifyObservers([
           this._coinsCollected,
           this._numOfCoins,
         ]);

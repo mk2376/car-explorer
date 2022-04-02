@@ -3,6 +3,7 @@ import { Hud } from '../ui';
 
 //load all sounds needed for game ui interactions
 export function _loadSounds(this: Hud): void {
+  /*
   this._sounds._pause = new Sound(
     'pauseSong',
     './CarExplorer/sounds/Snowland.wav',
@@ -40,4 +41,5 @@ export function _loadSounds(this: Hud): void {
       playbackRate: 0.6,
     }
   );
+  */
 }

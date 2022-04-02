@@ -16,7 +16,7 @@ import { now, elapsed } from './components/generics/GameEngine/helper';
 
 // environment variables
 const env = {
-  startSceneNumber: 0, // 3
+  startSceneNumber: 1, // 3
   // tells game, what part of game engines are enabled or run in dev mode (':dev')
   dev: 'portfolio, adventure', // adventure, adventure:dev, portfolio, portfolio:dev
 };

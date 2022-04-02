@@ -3,17 +3,21 @@ import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
 
 import { Containers } from 'src/BabylonGame/interfaces';
+import { now, elapsed } from '../../GameEngine/helper';
 import { Lights } from '../../Lights/Lights';
 import { AssetsManagerCustom } from '../assetsManagerCustom';
+import { _playerTask } from '../assetsManagerTasks/playerTasks/_playerTask';
 import {
-  _playerTask,
-  _meshPolicyPlayer,
-  _impostorPolicyPlayer,
-} from '../assetsManagerTasks/_playerTask';
+  _applyPolicyPlayer,
+  __meshPolicyPlayer,
+  __impostorPolicyPlayer,
+} from '../assetsManagerTasks/playerTasks/_policyPlayer';
+
 import {
-  _meshPolicyWorld,
-  _impostorPolicyWorld,
-} from '../assetsManagerTasks/_policyWorld';
+  _applyPolicyWorld,
+  __meshPolicyWorld,
+  __impostorPolicyWorld,
+} from '../assetsManagerTasks/worldTasks/_policyWorld';
 
 let Ammo: typeof AmmoModule;
 
@@ -24,17 +28,24 @@ export class Environment {
   protected _sceneManagement: SceneManagement;
   protected _assetsManager: AssetsManager;
   readonly _containers: Containers = {};
+
   protected _showBoundingBox = false;
 
-  readonly containerName!: string;
-  readonly containerNamePlayer!: string;
+  readonly containerWorld!: string;
+  readonly containerPlayer!: string;
+  readonly containerLights!: string;
 
-  private _meshPolicyWorld = _meshPolicyWorld;
-  private _impostorPolicyWorld = _impostorPolicyWorld;
+  // worlds
+  protected _applyPolicyWorld = _applyPolicyWorld;
+  protected __meshPolicyWorld = __meshPolicyWorld;
+  protected __impostorPolicyWorld = __impostorPolicyWorld;
 
+  // player
   protected _playerTask = _playerTask;
-  protected _meshPolicyPlayer = _meshPolicyPlayer;
-  protected _impostorPolicyPlayer = _impostorPolicyPlayer;
+
+  protected _applyPolicyPlayer = _applyPolicyPlayer;
+  protected __meshPolicyPlayer = __meshPolicyPlayer;
+  protected __impostorPolicyPlayer = __impostorPolicyPlayer;
 
   protected Ammo: typeof AmmoModule;
 
@@ -53,25 +64,20 @@ export class Environment {
     this.Ammo = Ammo;
   }
 
-  _applyPolicyWorld(container: AssetContainer) {
-    //Loop through all world environment meshes that were imported
-    container.meshes.forEach((mesh) => {
-      this._meshPolicyWorld(mesh, container);
-      this._impostorPolicyWorld(mesh, container);
-    });
+  protected _createLights(lights: Lights, containerName: string) {
+    this._lights = lights;
+    this._containers[containerName] = this._lights._container;
   }
 
-  async _playerTaskLoad(
-    container: AssetContainer,
-    containerNamePlayer: string
-  ) {
-    this._playerTask(containerNamePlayer);
-    await this._assetsManager.loadAsync();
-  }
+  public async addAlltoScene() {
+    const begining = now();
 
-  addAlltoScene() {
-    this._containers[this.containerName].addAllToScene();
-    this._containers[this.containerNamePlayer].addAllToScene();
+    this._containers[this.containerWorld].addAllToScene();
+    this._containers[this.containerPlayer].addAllToScene();
+    this._containers[this.containerLights].addAllToScene();
+
+    await this._scene.whenReadyAsync();
+    console.info(`${elapsed(begining)} addAlltoScene`);
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await

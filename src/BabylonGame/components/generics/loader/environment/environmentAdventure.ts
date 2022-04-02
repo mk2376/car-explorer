@@ -1,15 +1,18 @@
 import { Color3, Scene } from '@babylonjs/core';
 import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
+import { now, elapsed } from '../../GameEngine/helper';
+import { Lights } from '../../Lights/Lights';
 import { LightsAdventure } from '../../Lights/LightsAdventure';
-import { _adventureWorldTask } from '../assetsManagerTasks/_adventureWorldTask';
+import { _adventureWorldTask } from '../assetsManagerTasks/worldTasks/_adventureWorldTask';
 import { Environment } from './environment';
 
 export class EnvironmentAdventure extends Environment {
   protected _adventureWorldTask = _adventureWorldTask;
 
-  readonly containerName = 'adventureWorld';
-  readonly containerNamePlayer = this.containerName + '_player';
+  readonly containerWorld = 'adventureWorld';
+  readonly containerPlayer = this.containerWorld + '_player';
+  readonly containerLights = this.containerWorld + '_lights';
 
   constructor(
     scene: Scene,
@@ -20,21 +23,37 @@ export class EnvironmentAdventure extends Environment {
   }
 
   public async load() {
-    this._adventureWorldTask(this.containerName);
+    await this._addtasks();
+
     await this._assetsManager.loadAsync();
-    const container = this._containers[this.containerName];
-    console.log('environmentAdventure assets loaded');
 
-    this._lights = new LightsAdventure(this._scene, container);
-
-    this._applyPolicyWorld(container);
-    await this._playerTaskLoad(container, this.containerNamePlayer);
-    console.log('environmentAdventure player loaded');
-
-    this._loadFog();
+    this._applyPolicys();
   }
 
-  private _loadFog() {
+  private async _addtasks() {
+    const begining = now();
+    this._adventureWorldTask(this.containerWorld);
+    await this._assetsManager.loadAsync();
+    console.info(`  ${elapsed(begining)} ${this.containerWorld} loaded`);
+
+    const begining2 = now();
+    this._playerTask(this.containerPlayer);
+    await this._assetsManager.loadAsync();
+    console.info(`  ${elapsed(begining2)} ${this.containerPlayer} loaded`);
+
+    this._createLights(new LightsAdventure(this._scene), this.containerLights);
+    this._createFog();
+  }
+
+  private _applyPolicys() {
+    const containerWorld = this._containers[this.containerWorld];
+    const containerPlayer = this._containers[this.containerPlayer];
+
+    this._applyPolicyWorld(containerWorld);
+    this._applyPolicyPlayer(containerPlayer);
+  }
+
+  private _createFog() {
     this._scene.fogMode = Scene.FOGMODE_EXP2;
     this._scene.fogDensity = 0.04;
     this._scene.fogColor = new Color3(0.9, 0.9, 0.85);

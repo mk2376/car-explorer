@@ -40,7 +40,8 @@ export class GameEnginePortfolio extends GameEngine {
     await this.createPlayer();
     await this.createActionsController();
 
-    this._environment.addAlltoScene();
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await this._environment.addAlltoScene();
 
     await this._loadSounds();
 
@@ -55,6 +56,6 @@ export class GameEnginePortfolio extends GameEngine {
     this._player.toInitPosition();
 
     //--SOUNDS--
-    this._sounds.game.play(); // play the gamesong
+    // this._sounds.game.play(); // play the gamesong
   }
 }

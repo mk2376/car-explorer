@@ -12,7 +12,6 @@ import {
 import AmmoModule from 'ammojs-typed';
 import { PlayerInput } from './inputController';
 import { Hud } from '../ui/ui';
-import { SceneManagement } from '../../sceneManagement';
 
 let Ammo: typeof AmmoModule;
 
@@ -217,7 +216,7 @@ export class Player {
 
   private createVehicle() {
     const mesh = this._container.meshes.filter((searchedMesh) =>
-      searchedMesh.name.includes('Player, objectType:player, mass:700')
+      searchedMesh.name.includes('objectType:player')
     )[0];
     if (!mesh) throw new Error('mesh could not be found');
 

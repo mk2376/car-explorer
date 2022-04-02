@@ -26,7 +26,7 @@ export function createPauseBtn(this: Hud) {
     // this.timer._prevTime = this.time;
 
     //--SOUNDS--
-    this._scene.getSoundByName('gameSong')!.pause();
-    this._sounds._pause.play(); //play pause sounds
+    // this._scene.getSoundByName('gameSong')!.pause();
+    // this._sounds._pause.play(); //play pause sounds
   });
 }

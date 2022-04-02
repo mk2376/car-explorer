@@ -1,5 +1,6 @@
 import {
   Color3,
+  CubeTexture,
   HDRCubeTexture,
   MeshBuilder,
   Scene,
@@ -8,13 +9,14 @@ import {
 } from '@babylonjs/core';
 import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
+import { now, elapsed } from '../../GameEngine/helper';
 import { LightsPortfolio } from '../../Lights/LightsPortfolio';
-import { _portfolioWorldTask } from '../assetsManagerTasks/_portfolioWorldTask';
+import { _portfolioWorldTask } from '../assetsManagerTasks/worldTasks/_portfolioWorldTask';
 import {
   _testWorldTask,
   _testWorldAddons,
   _createBox,
-} from '../assetsManagerTasks/_testWorldTask';
+} from '../assetsManagerTasks/worldTasks/_testWorldTask';
 import { Environment } from './environment';
 
 export class EnvironmentPortfolio extends Environment {
@@ -24,8 +26,9 @@ export class EnvironmentPortfolio extends Environment {
   protected _testWorldAddons = _testWorldAddons;
   protected _createBox = _createBox;
 
-  readonly containerName = 'portfolioWorld';
-  readonly containerNamePlayer = this.containerName + '_player';
+  readonly containerWorld = 'portfolioWorld';
+  readonly containerPlayer = this.containerWorld + '_player';
+  readonly containerLights = this.containerWorld + '_lights';
 
   constructor(
     scene: Scene,
@@ -36,36 +39,62 @@ export class EnvironmentPortfolio extends Environment {
   }
 
   public async load(dev: boolean) {
-    if (dev) {
-      this._testWorldTask(this.containerName);
-      await this._assetsManager.loadAsync();
-      const container = this._containers[this.containerName];
-      this._lights = new LightsPortfolio(this._scene, container);
-      await this._playerTaskLoad(container, this.containerNamePlayer);
-    } else {
-      this._portfolioWorldTask(this.containerName);
-      await this._assetsManager.loadAsync();
-      const container = this._containers[this.containerName];
-      console.log('environmentPortfolio assets loaded');
+    const begining = now();
+    await this._addtasks(dev);
+    console.info(`  ${elapsed(begining)} ${'tasks'} loaded`);
 
-      this._lights = new LightsPortfolio(this._scene, container);
+    //await this._assetsManager.loadAsync();
 
-      this._applyPolicyWorld(container);
-      await this._playerTaskLoad(container, this.containerNamePlayer);
-      console.log('environmentPortfolio player loaded');
-
-      this._loadSkyBox();
-    }
+    const begining2 = now();
+    this._applyPolicys(dev);
+    await this._scene.whenReadyAsync();
+    console.info(`  ${elapsed(begining2)} ${'applyPolicys'} loaded`);
   }
 
-  private _loadSkyBox() {
-    const skybox = MeshBuilder.CreateBox('skyBox', { size: 1000 }, this._scene);
+  private async _addtasks(dev: boolean) {
+    const begining = now();
+    if (dev) this._testWorldTask(this.containerWorld);
+    else this._portfolioWorldTask(this.containerWorld);
+    await this._assetsManager.loadAsync();
+    await this._scene.whenReadyAsync();
+    console.info(`    ${elapsed(begining)} ${this.containerWorld} loaded`);
+
+    const begining2 = now();
+    this._playerTask(this.containerPlayer);
+    await this._assetsManager.loadAsync();
+    await this._scene.whenReadyAsync();
+    console.info(`    ${elapsed(begining2)} ${this.containerPlayer} loaded`);
+
+    const begining3 = now();
+    this._createLights(new LightsPortfolio(this._scene), this.containerLights);
+    this._createSkyBox();
+    await this._scene.whenReadyAsync();
+    console.info(`    ${elapsed(begining3)} ${'miscelnus'} loaded`);
+  }
+
+  private _applyPolicys(dev: boolean) {
+    const containerWorld = this._containers[this.containerWorld];
+    const containerPlayer = this._containers[this.containerPlayer];
+
+    if (!dev) this._applyPolicyWorld(containerWorld);
+    this._applyPolicyPlayer(containerPlayer);
+  }
+
+  private _createSkyBox() {
+    const skybox = MeshBuilder.CreateBox('skyBox', { size: 3000 }, this._scene);
     const skyboxMaterial = new StandardMaterial('skyBox', this._scene);
     skyboxMaterial.backFaceCulling = false;
+    /*
     skyboxMaterial.reflectionTexture = new HDRCubeTexture(
       './CarExplorer/textures/sky/CasualDay4K.hdr',
       this._scene,
-      1024
+      1024,
+      true
+    );
+    */
+    skyboxMaterial.reflectionTexture = new CubeTexture(
+      './CarExplorer/textures/sky/cubemap/CasualDay4K',
+      this._scene
     );
     skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
     skyboxMaterial.diffuseColor = new Color3(0, 0, 0);

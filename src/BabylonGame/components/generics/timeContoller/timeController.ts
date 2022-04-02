@@ -1,10 +1,11 @@
 import { AdvancedTimer, Scene } from '@babylonjs/core';
 import { SceneManagement } from '../../sceneManagement';
+import { AdventureHud } from '../ui/adventureUi';
 import { Hud } from '../ui/ui';
 
 export class timeController {
   protected _scene: Scene;
-  protected _ui: Hud;
+  protected _ui: AdventureHud;
   protected _sceneManagement: SceneManagement;
   protected _mainTimer: AdvancedTimer<Scene>;
 
@@ -12,7 +13,11 @@ export class timeController {
   protected _timeToEnd!: number;
   protected _fullTimeToEnd!: number;
 
-  constructor(scene: Scene, ui: Hud, sceneManagement: SceneManagement) {
+  constructor(
+    scene: Scene,
+    ui: AdventureHud,
+    sceneManagement: SceneManagement
+  ) {
     this._scene = scene;
     this._ui = ui;
     this._sceneManagement = sceneManagement;
@@ -65,7 +70,7 @@ export class timeController {
         this.normalizeTime(this._fullTimeToEnd) -
         this.normalizeTime(data.deltaTime);
 
-      this._ui.observers.timer.notifyObservers([time]);
+      this._ui.observers.timer!.notifyObservers([time]);
     });
     advancedTimer.onTimerAbortedObservable.add((data) => {
       this._timeToEnd = data.deltaTime;

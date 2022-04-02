@@ -44,6 +44,6 @@ export function _createControlsMenu(this: Hud) {
     this.ui._controls.isVisible = false;
 
     //play transition sound
-    this._sounds._sfx.play();
+    // this._sounds._sfx.play();
   });
 }

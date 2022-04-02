@@ -1,4 +1,4 @@
-import { AssetContainer, Sound } from '@babylonjs/core';
+import { AssetContainer, Observable, Observer, Sound } from '@babylonjs/core';
 import { GameEngine } from './components/generics/GameEngine/GameEngine';
 import { simpleSceneEngine } from './simpleScenes/simpleSceneEngine';
 
@@ -24,4 +24,13 @@ export interface Metadata {
 
 export interface Containers {
   [key: string]: AssetContainer;
+}
+
+export interface observers {
+  speedMeter: Observable<unknown>;
+}
+
+export interface adventureObservers extends observers {
+  crystal?: Observable<unknown>;
+  timer?: Observable<unknown>;
 }

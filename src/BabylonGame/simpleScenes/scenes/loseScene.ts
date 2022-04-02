@@ -58,11 +58,12 @@ export class loseScene extends simpleSceneEngine {
       void this._sceneManagement.stateManagement.updateCurState(
         this._sceneManagement._State.START
       );
-      this._sounds.sfx.play();
+      // this._sounds.sfx.play();
     });
   }
 
   protected _loadSounds() {
+    /*
     const start = new Sound(
       'loseSong',
       './CarExplorer/sounds/Eye of the Storm.mp3',
@@ -84,5 +85,6 @@ export class loseScene extends simpleSceneEngine {
       this._scene
     );
     this._sounds.sfx = sfx;
+    */
   }
 }

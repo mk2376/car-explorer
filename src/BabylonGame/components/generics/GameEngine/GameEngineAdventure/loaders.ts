@@ -17,7 +17,7 @@ export async function createEnvironment(this: GameEngineAdventure) {
     this.Ammo
   );
   await this._environment.load();
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} environment loaded`);
 }
@@ -29,13 +29,13 @@ export async function createPlayer(this: GameEngineAdventure) {
   this._player = new Player(
     this._canvas,
     this._scene,
-    this._environment._containers[this._environment.containerNamePlayer],
+    this._environment._containers[this._environment.containerPlayer],
     this._ui,
     this.gamePaused,
     this.Ammo
   );
   this._player.load();
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} player loaded`);
 }
@@ -46,10 +46,10 @@ export async function createActionsController(this: GameEngineAdventure) {
 
   this._actionsController = new actionsControllerAdventure(
     this._player,
-    this._environment._containers[this._environment.containerName],
+    this._environment._containers[this._environment.containerWorld],
     this._sceneManagement
   );
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(
     `${elapsed(begining)} ${gameEngineName} actionsController created`
@@ -71,9 +71,9 @@ export async function createCoinController(
   );
 
   this._coinController.init(
-    this._environment._containers[this._environment.containerName]
+    this._environment._containers[this._environment.containerWorld]
   );
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} coinController created`);
 }
@@ -82,6 +82,7 @@ export async function createCoinController(
 export async function _loadSounds(this: GameEngineAdventure) {
   const begining = now();
 
+  /*
   const game = new Sound(
     'gameSong',
     './CarExplorer/sounds/Christmassynths.wav',
@@ -108,6 +109,7 @@ export async function _loadSounds(this: GameEngineAdventure) {
     }
   );
   this._sounds.end = end;
+  */
 
   await this._scene.whenReadyAsync();
 

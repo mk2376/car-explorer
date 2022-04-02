@@ -6,14 +6,10 @@ import {
   Button,
   Rectangle,
 } from '@babylonjs/gui';
-import { Sounds } from 'src/BabylonGame/interfaces';
+import { observers, Sounds } from 'src/BabylonGame/interfaces';
 import { SceneManagement } from '../../sceneManagement';
 
-import {
-  createCrystalsBlock,
-  createSpeedBlock,
-  createTimeBlock,
-} from './creators/blocks';
+import { createSpeedBlock } from './creators/blocks';
 import { createPauseBtn } from './creators/buttons';
 import { _createControlsMenu } from './creators/controlsMenu';
 import { mobileControls } from './creators/mobileControls';
@@ -55,19 +51,15 @@ export class Hud {
   readonly mobile = new mobile();
 
   // Observable
-  readonly observers = {
-    crystal: new Observable(),
-    timer: new Observable(),
+  readonly observers: observers = {
     speedMeter: new Observable(),
   };
 
   //Sounds
   protected _sounds: Sounds = {};
 
-  protected createCrystalsBlock = createCrystalsBlock;
-  protected createSpeedBlock = createSpeedBlock;
   protected createTopStackPanel = createTopStackPanel;
-  protected createTimeBlock = createTimeBlock;
+  protected createSpeedBlock = createSpeedBlock;
 
   protected createPauseBtn = createPauseBtn;
   protected _createControlsMenu = _createControlsMenu;
@@ -93,15 +85,12 @@ export class Hud {
     this.ui._playerUI.renderAtIdealSize = true;
 
     this.createTopStackPanel();
-
-    this.createCrystalsBlock();
-    this.createTimeBlock();
     this.createSpeedBlock();
 
-    this.createPauseBtn();
-    this._createControlsMenu();
-    this.mobileControls();
-    this._createPauseMenu();
+    // this.createPauseBtn();
+    // this._createControlsMenu();
+    // this.mobileControls();
+    // this._createPauseMenu();
 
     this._loadSounds();
   }

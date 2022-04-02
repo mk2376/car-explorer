@@ -1,7 +1,8 @@
 import { TextBlock, Control } from '@babylonjs/gui';
+import { AdventureHud } from '../adventureUi';
 import { Hud } from '../ui';
 
-export function createCrystalsBlock(this: Hud) {
+export function createCrystalsBlock(this: AdventureHud) {
   const block = new TextBlock();
   block.name = 'crystals';
   block.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_CENTER;
@@ -17,7 +18,7 @@ export function createCrystalsBlock(this: Hud) {
   block.resizeToFit = true;
   this.ui._playerUI.addControl(block);
 
-  this.observers.crystal.add((eventData, eventState) => {
+  this.observers.crystal!.add((eventData, eventState) => {
     const payload = eventData as Array<unknown>;
 
     const collected = payload[0] as number;
@@ -28,7 +29,7 @@ export function createCrystalsBlock(this: Hud) {
 }
 
 //Game timer text
-export function createTimeBlock(this: Hud) {
+export function createTimeBlock(this: AdventureHud) {
   const block = new TextBlock();
   block.name = 'clock';
   block.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
@@ -41,7 +42,7 @@ export function createTimeBlock(this: Hud) {
   block.fontFamily = 'Viga';
   this.ui._stackPanel.addControl(block);
 
-  this.observers.timer.add((eventData, eventState) => {
+  this.observers.timer!.add((eventData, eventState) => {
     const payload = eventData as Array<unknown>;
 
     const timeLeft = payload[0] as number;

@@ -64,7 +64,7 @@ export class startScene extends simpleSceneEngine {
 
     startBtn.onPointerDownObservable.add(() => {
       //sounds
-      this._sounds.sfx.play();
+      // this._sounds.sfx.play();
 
       void this._sceneManagement.stateManagement.updateCurState(
         this._sceneManagement._State.PORTFOLIO
@@ -137,7 +137,7 @@ export class startScene extends simpleSceneEngine {
   }
 
   protected _loadSounds() {
-    //--SOUNDS--
+    /*
     const start = new Sound(
       'startSong',
       './CarExplorer/sounds/copycat(revised).mp3',
@@ -159,5 +159,6 @@ export class startScene extends simpleSceneEngine {
       this._scene
     );
     this._sounds.sfx = sfx;
+    */
   }
 }

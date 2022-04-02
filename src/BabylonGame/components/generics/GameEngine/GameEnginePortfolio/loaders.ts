@@ -18,7 +18,7 @@ export async function createEnvironment(this: GameEnginePortfolio) {
   );
   // eslint-disable-next-line @typescript-eslint/await-thenable
   await this._environment.load(this._dev);
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} environment loaded`);
 }
@@ -30,13 +30,13 @@ export async function createPlayer(this: GameEnginePortfolio) {
   this._player = new Player(
     this._canvas,
     this._scene,
-    this._environment._containers[this._environment.containerNamePlayer],
+    this._environment._containers[this._environment.containerPlayer],
     this._ui,
     this.gamePaused,
     this.Ammo
   );
   this._player.load();
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} player loaded`);
 }
@@ -47,10 +47,10 @@ export async function createActionsController(this: GameEnginePortfolio) {
 
   this._actionsController = new actionsControllerPortfolio(
     this._player,
-    this._environment._containers[this._environment.containerName],
+    this._environment._containers[this._environment.containerWorld],
     this._sceneManagement
   );
-  // await this._scene.whenReadyAsync();
+  await this._scene.whenReadyAsync();
 
   console.info(
     `${elapsed(begining)} ${gameEngineName} actionsController created`
@@ -61,6 +61,7 @@ export async function createActionsController(this: GameEnginePortfolio) {
 export async function _loadSounds(this: GameEnginePortfolio) {
   const begining = now();
 
+  /*
   const game = new Sound(
     'gameSong',
     './CarExplorer/sounds/Christmassynths.wav',
@@ -74,19 +75,7 @@ export async function _loadSounds(this: GameEnginePortfolio) {
     }
   );
   this._sounds.game = game;
-
-  const end = new Sound(
-    'endSong',
-    './CarExplorer/sounds/copycat(revised).mp3',
-    this._scene,
-    function () {
-      // empty
-    },
-    {
-      volume: 0.25,
-    }
-  );
-  this._sounds.end = end;
+  */
 
   await this._scene.whenReadyAsync();
 

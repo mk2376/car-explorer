@@ -12,14 +12,14 @@ import {
 
 export class Lights {
   protected _scene: Scene;
-  protected _container: AssetContainer;
+  readonly _container: AssetContainer;
   protected _hemiLight!: HemisphericLight;
   protected _directionalLight: DirectionalLight[] = [];
   protected _shadowGenerator: ShadowGenerator[] = [];
 
-  constructor(scene: Scene, container: AssetContainer) {
+  constructor(scene: Scene) {
     this._scene = scene;
-    this._container = container;
+    this._container = new AssetContainer(this._scene);
     // this.directionalLight.setEnabled(true);
   }
 

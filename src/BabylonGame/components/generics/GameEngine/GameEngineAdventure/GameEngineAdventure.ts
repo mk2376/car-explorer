@@ -13,9 +13,11 @@ import { timeController } from '../../timeContoller/timeController';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
 import { GameSceneEngine } from 'src/BabylonGame/interfaces';
 import { now, elapsed } from '../helper';
+import { AdventureHud } from '../../ui/adventureUi';
 const gravityVector = new Vector3(0, -9.81, 0);
 
 export class GameEngineAdventure extends GameEngine {
+  public _ui: AdventureHud;
   protected _coinController!: coinController;
   protected _win = false;
   protected _timeController: timeController;
@@ -35,6 +37,12 @@ export class GameEngineAdventure extends GameEngine {
   ) {
     super(canvas, engine, sceneManagement);
 
+    this._ui = new AdventureHud(
+      this._scene,
+      this._sceneManagement,
+      this._gamePaused
+    );
+
     this._timeController = new timeController(
       this._scene,
       this._ui,
@@ -52,7 +60,7 @@ export class GameEngineAdventure extends GameEngine {
     await this.createActionsController();
     await this.createCoinController(4); // has to be initialized after createActionsController as he creates 'new ActionManager'
 
-    this._environment.addAlltoScene();
+    await this._environment.addAlltoScene();
 
     await this._loadSounds();
 
@@ -83,7 +91,7 @@ export class GameEngineAdventure extends GameEngine {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async onEnter() {
     //--SOUNDS--
-    this._sounds.game.play(); // play the gamesong
+    // this._sounds.game.play(); // play the gamesong
     this._player.toInitPosition();
     this._timeController.start(30 * 1000); //4 * 60 * 1000);
   }

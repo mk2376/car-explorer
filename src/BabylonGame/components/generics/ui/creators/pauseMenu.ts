@@ -48,13 +48,13 @@ export function _createPauseMenu(this: Hud): void {
     this._gamePaused = false;
 
     //--SOUNDS--
-    this._scene.getSoundByName('gameSong')!.play();
-    this._sounds._pause.stop();
+    // this._scene.getSoundByName('gameSong')!.play();
+    // this._sounds._pause.stop();
 
     if (this._sounds._sparkWarningSfx.isPaused) {
-      this._sounds._sparkWarningSfx.play();
+      // this._sounds._sparkWarningSfx.play();
     }
-    this._sounds._sfx.play(); //play transition sound
+    // this._sounds._sfx.play(); //play transition sound
   });
 
   const controlsBtn = Button.CreateSimpleButton('controls', 'CONTROLS');
@@ -78,7 +78,7 @@ export function _createPauseMenu(this: Hud): void {
     this.ui._pauseMenu.isVisible = false;
 
     //play transition sound
-    this._sounds._sfx.play();
+    // this._sounds._sfx.play();
   });
 
   const quitBtn = Button.CreateSimpleButton('quit', 'QUIT');
@@ -100,7 +100,7 @@ export function _createPauseMenu(this: Hud): void {
     );
 
     //--SOUNDS--
-    this._sounds.quitSfx.play();
+    // this._sounds.quitSfx.play();
     if (this._sounds._pause.isPlaying) {
       this._sounds._pause.stop();
     }

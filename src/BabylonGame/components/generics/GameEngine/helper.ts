@@ -8,6 +8,6 @@ export const now = () => {
 // (and, optionally, prints the duration in seconds)
 export const elapsed = (beginning: number) => {
   const duration = new Date().getTime() - beginning;
-  const durationString = '  ' + String(duration / 1000).padStart(5);
+  const durationString = '  ' + (duration / 1000).toFixed(2).padStart(5);
   return durationString;
 };

@@ -7,13 +7,12 @@ import {
   ShadowGenerator,
   Scene,
   SpotLight,
-  AssetContainer,
 } from '@babylonjs/core';
 import { Lights } from './Lights';
 
 export class LightsAdventure extends Lights {
-  constructor(scene: Scene, container: AssetContainer) {
-    super(scene, container);
+  constructor(scene: Scene) {
+    super(scene);
 
     this.createEnvironmentLight();
     this.createSun();
