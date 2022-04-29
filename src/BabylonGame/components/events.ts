@@ -7,7 +7,7 @@ export function events(engine: Engine, sceneManagement: SceneManagement): void {
     //Shift+Ctrl+Alt+I
     if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'I') {
       console.log('Babylon inspector enabled.');
-      const curState = sceneManagement.stateManagement.curState;
+      const curState = sceneManagement.state.cur;
 
       if (
         sceneManagement._scenesByState[curState].scene.debugLayer.isVisible()

@@ -66,7 +66,7 @@ export class startScene extends simpleSceneEngine {
       //sounds
       // this._sounds.sfx.play();
 
-      void this._sceneManagement.stateManagement.updateCurState(
+      void this._sceneManagement.state.updateCurState(
         this._sceneManagement._State.PORTFOLIO
       );
     });

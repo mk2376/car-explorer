@@ -8,13 +8,11 @@ import {
   createPlayer,
   _loadSounds,
 } from './loaders';
-import { elapsed, now } from '../helper';
+import { elapsed, now } from '../../../time';
 
 const gravityVector = new Vector3(0, -9.81, 0);
 
 export class GameEnginePortfolio extends GameEngine {
-  protected _dev = false;
-
   protected createEnvironment = createEnvironment;
   protected createPlayer = createPlayer;
   protected createActionsController = createActionsController;
@@ -23,12 +21,9 @@ export class GameEnginePortfolio extends GameEngine {
   constructor(
     canvas: HTMLCanvasElement,
     engine: Engine,
-    sceneManagement: SceneManagement,
-    dev: string
+    sceneManagement: SceneManagement
   ) {
     super(canvas, engine, sceneManagement);
-
-    if (dev.includes('portfolio:dev')) this._dev = true;
   }
 
   public async init(): Promise<GameSceneEngine> {

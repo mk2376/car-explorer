@@ -55,7 +55,7 @@ export class loseScene extends simpleSceneEngine {
     panel.addControl(mainBtn);
 
     mainBtn.onPointerUpObservable.add(() => {
-      void this._sceneManagement.stateManagement.updateCurState(
+      void this._sceneManagement.state.updateCurState(
         this._sceneManagement._State.START
       );
       // this._sounds.sfx.play();

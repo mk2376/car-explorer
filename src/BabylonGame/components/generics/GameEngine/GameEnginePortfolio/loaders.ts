@@ -2,8 +2,7 @@ import { Sound } from '@babylonjs/core';
 import { actionsControllerPortfolio } from '../../actionsController/actionsControllerPortfolio';
 import { EnvironmentPortfolio } from '../../loader/environment/environmentPortfolio';
 import { Player } from '../../player/player';
-import { GameEngineAdventure } from '../GameEngineAdventure/GameEngineAdventure';
-import { now, elapsed } from '../helper';
+import { now, elapsed } from '../../../time';
 import { GameEnginePortfolio } from './GameEnginePortfolio';
 
 const gameEngineName = 'portfolio';
@@ -17,7 +16,8 @@ export async function createEnvironment(this: GameEnginePortfolio) {
     this.Ammo
   );
   // eslint-disable-next-line @typescript-eslint/await-thenable
-  await this._environment.load(this._dev);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await this._environment.load();
   await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} environment loaded`);

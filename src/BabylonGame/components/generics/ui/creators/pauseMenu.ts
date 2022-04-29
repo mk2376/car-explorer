@@ -95,7 +95,7 @@ export function _createPauseMenu(this: Hud): void {
   stackPanel.addControl(quitBtn);
 
   quitBtn.onPointerDownObservable.add(() => {
-    void this._sceneManagement.stateManagement.updateCurState(
+    void this._sceneManagement.state.updateCurState(
       this._sceneManagement._State.START
     );
 

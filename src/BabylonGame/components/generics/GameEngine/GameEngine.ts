@@ -76,10 +76,10 @@ export class GameEngine {
   }
 
   public async onEnter() {
-    //
+    // method implemented in extended classes
   }
 
   public async onExit() {
-    //
+    // method implemented in extended classes
   }
 }

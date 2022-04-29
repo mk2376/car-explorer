@@ -12,7 +12,7 @@ import { updater } from './updaters';
 import { timeController } from '../../timeContoller/timeController';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
 import { GameSceneEngine } from 'src/BabylonGame/interfaces';
-import { now, elapsed } from '../helper';
+import { now, elapsed } from '../../../time';
 import { AdventureHud } from '../../ui/adventureUi';
 const gravityVector = new Vector3(0, -9.81, 0);
 
@@ -81,7 +81,7 @@ export class GameEngineAdventure extends GameEngine {
         //dont allow pause menu interaction
         this._ui.ui.pauseBtn.isHitTestVisible = false;
 
-        void this._sceneManagement.stateManagement.updateCurState(
+        void this._sceneManagement.state.updateCurState(
           this._sceneManagement._State.WIN
         );
       }

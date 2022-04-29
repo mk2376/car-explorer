@@ -28,7 +28,7 @@ export class actionsControllerAdventure extends actionsController {
 
     if (!onPortalIndicatorAdventure)
       throw new Error(
-        'onPortalIndicatorAdventure could not be found/was not provided'
+        'OnPortalIndicatorAdventure could not be found/was not provided'
       );
 
     actionHelper(

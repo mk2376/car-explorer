@@ -3,7 +3,7 @@ import { actionsControllerAdventure } from '../../actionsController/actionsContr
 import { coinController } from '../../coinController/coinController';
 import { EnvironmentAdventure } from '../../loader/environment/environmentAdventure';
 import { Player } from '../../player/player';
-import { now, elapsed } from '../helper';
+import { now, elapsed } from '../../../time';
 import { GameEngineAdventure } from './GameEngineAdventure';
 
 const gameEngineName = 'adventure';

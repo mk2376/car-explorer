@@ -1,9 +1,9 @@
-import { AssetContainer, AssetsManager, Engine, Scene } from '@babylonjs/core';
+import { AssetsManager, Engine, Scene } from '@babylonjs/core';
 import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
 
 import { Containers } from 'src/BabylonGame/interfaces';
-import { now, elapsed } from '../../GameEngine/helper';
+import { now, elapsed } from '../../../time';
 import { Lights } from '../../Lights/Lights';
 import { AssetsManagerCustom } from '../assetsManagerCustom';
 import { _playerTask } from '../assetsManagerTasks/playerTasks/_playerTask';
@@ -81,7 +81,7 @@ export class Environment {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async load(dev?: boolean) {
+  async load() {
     throw new Error('Method not implemented.');
   }
 }

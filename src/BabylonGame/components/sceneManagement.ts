@@ -1,7 +1,5 @@
-import { Effect, PostProcess, Scene } from '@babylonjs/core';
+import { Effect, PostProcess } from '@babylonjs/core';
 import { Engines, GameSceneEngine, State } from '../interfaces';
-import { simpleSceneEngine } from '../simpleScenes/simpleSceneEngine';
-import { GameEngine } from './generics/GameEngine/GameEngine';
 
 // mapper for scene names and state codes
 const ScenesWithStates: { key: number; state: string; scene: string }[] = [
@@ -17,7 +15,7 @@ export class SceneManagement {
   readonly _State: State = {};
   readonly _scenes: Engines = {};
   readonly _scenesByState: GameSceneEngine[] = [];
-  public stateManagement!: StateManagement;
+  public state!: StateManagement;
 
   constructor() {
     // empty
@@ -36,7 +34,7 @@ export class SceneManagement {
       this._scenesByState.push(loadedSceneObjects[key]);
     });
 
-    this.stateManagement = new StateManagement(initState, this._scenesByState);
+    this.state = new StateManagement(initState, this._scenesByState);
   }
 }
 
@@ -48,8 +46,16 @@ class StateManagement {
 
   constructor(initState: number, scenesByState: GameSceneEngine[]) {
     this._scenesByState = scenesByState;
-    shader();
+    registerShader();
     void this.updateCurState(initState);
+  }
+
+  get cur(): number {
+    return this._curState;
+  }
+
+  get prev(): number {
+    return this._prevState;
   }
 
   public async updateCurState(newState: number) {
@@ -81,7 +87,7 @@ class StateManagement {
         ['fadeLevel'],
         null,
         1.0,
-        this._scenesByState[this.curState].scene.activeCamera
+        this._scenesByState[this._curState].scene.activeCamera
       );
 
       postProcess.onApply = (effect) => {
@@ -92,10 +98,7 @@ class StateManagement {
         if (increasing) fadeLevel += fadeSpeed;
         else fadeLevel -= fadeSpeed;
 
-        // console.log('fadeLevel', fadeLevel);
         if (increasing ? fadeLevel >= 1 : fadeLevel <= 0) {
-          // console.log('faded /////////////////');
-
           clearInterval(timer);
           postProcess.dispose();
           resolve('');
@@ -103,17 +106,9 @@ class StateManagement {
       }, 16); // changes every 16ms, that is 60Hz
     });
   }
-
-  get curState(): number {
-    return this._curState;
-  }
-
-  get prevState(): number {
-    return this._prevState;
-  }
 }
 
-function shader() {
+function registerShader() {
   Effect.RegisterShader(
     'fade',
     'precision highp float;' +

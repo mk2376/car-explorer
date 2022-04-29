@@ -69,7 +69,7 @@ export class cutScene extends simpleSceneEngine {
     this._ui.addControl(skipBtn);
 
     skipBtn.onPointerDownObservable.add(() => {
-      void this._sceneManagement.stateManagement.updateCurState(
+      void this._sceneManagement.state.updateCurState(
         this._sceneManagement._State.ADVENTURE
       );
     });

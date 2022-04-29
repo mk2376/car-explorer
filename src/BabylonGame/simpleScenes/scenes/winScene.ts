@@ -97,7 +97,7 @@ export class winScene extends simpleSceneEngine {
     this._ui.addControl(btn);
 
     btn.onPointerDownObservable.add(() => {
-      void this._sceneManagement.stateManagement.updateCurState(
+      void this._sceneManagement.state.updateCurState(
         this._sceneManagement._State.START
       );
     });

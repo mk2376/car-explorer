@@ -23,7 +23,7 @@ export class actionsControllerPortfolio extends actionsController {
     );
 
     if (!resetBearier)
-      throw new Error('resetBearier could not be found/was not provided');
+      throw new Error('ResetBearier_ could not be found/was not provided');
 
     actionHelper(
       this._chassisMesh,
@@ -40,7 +40,7 @@ export class actionsControllerPortfolio extends actionsController {
     );
 
     if (!warningBearier)
-      throw new Error('warningBearier could not be found/was not provided');
+      throw new Error('WarningBearier_ could not be found/was not provided');
 
     actionHelper(this._chassisMesh, warningBearier, () => {
       // warning
@@ -54,14 +54,14 @@ export class actionsControllerPortfolio extends actionsController {
 
     if (!onPortalIndicatorPortfolio)
       throw new Error(
-        'onPortalIndicatorPortfolio could not be found/was not provided'
+        'OnPortalIndicatorPortfolio could not be found/was not provided'
       );
 
     actionHelper(
       this._chassisMesh,
       onPortalIndicatorPortfolio,
       (mesh: AbstractMesh, action: IAction) => {
-        void this._sceneManagement.stateManagement.updateCurState(
+        void this._sceneManagement.state.updateCurState(
           this._sceneManagement._State.CUTSCENE
         );
       }

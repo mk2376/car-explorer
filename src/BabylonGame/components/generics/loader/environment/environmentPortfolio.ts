@@ -1,7 +1,6 @@
 import {
   Color3,
   CubeTexture,
-  HDRCubeTexture,
   MeshBuilder,
   Scene,
   StandardMaterial,
@@ -9,7 +8,7 @@ import {
 } from '@babylonjs/core';
 import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
-import { now, elapsed } from '../../GameEngine/helper';
+import { now, elapsed } from '../../../time';
 import { LightsPortfolio } from '../../Lights/LightsPortfolio';
 import { _portfolioWorldTask } from '../assetsManagerTasks/worldTasks/_portfolioWorldTask';
 import {
@@ -38,22 +37,23 @@ export class EnvironmentPortfolio extends Environment {
     super(scene, sceneManagement, AmmoImport);
   }
 
-  public async load(dev: boolean) {
+  public async load() {
     const begining = now();
-    await this._addtasks(dev);
+    await this._addtasks();
     console.info(`  ${elapsed(begining)} ${'tasks'} loaded`);
 
     //await this._assetsManager.loadAsync();
 
     const begining2 = now();
-    this._applyPolicys(dev);
+    this._applyPolicys();
     await this._scene.whenReadyAsync();
     console.info(`  ${elapsed(begining2)} ${'applyPolicys'} loaded`);
   }
 
-  private async _addtasks(dev: boolean) {
+  private async _addtasks() {
     const begining = now();
-    if (dev) this._testWorldTask(this.containerWorld);
+    if (process.env.ENV_TYPE === 'DEV')
+      this._testWorldTask(this.containerWorld);
     else this._portfolioWorldTask(this.containerWorld);
     await this._assetsManager.loadAsync();
     await this._scene.whenReadyAsync();
@@ -72,11 +72,11 @@ export class EnvironmentPortfolio extends Environment {
     console.info(`    ${elapsed(begining3)} ${'miscelnus'} loaded`);
   }
 
-  private _applyPolicys(dev: boolean) {
+  private _applyPolicys() {
     const containerWorld = this._containers[this.containerWorld];
     const containerPlayer = this._containers[this.containerPlayer];
 
-    if (!dev) this._applyPolicyWorld(containerWorld);
+    if (process.env.ENV_TYPE === 'PROD') this._applyPolicyWorld(containerWorld);
     this._applyPolicyPlayer(containerPlayer);
   }
 

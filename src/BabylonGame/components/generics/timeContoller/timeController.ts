@@ -77,7 +77,7 @@ export class timeController {
       console.log('Timer aborted/stopped');
     });
     advancedTimer.onTimerEndedObservable.add(() => {
-      void this._sceneManagement.stateManagement.updateCurState(
+      void this._sceneManagement.state.updateCurState(
         this._sceneManagement._State.LOSE
       );
     });

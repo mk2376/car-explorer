@@ -1,8 +1,7 @@
 import { Color3, Scene } from '@babylonjs/core';
 import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
-import { now, elapsed } from '../../GameEngine/helper';
-import { Lights } from '../../Lights/Lights';
+import { now, elapsed } from '../../../time';
 import { LightsAdventure } from '../../Lights/LightsAdventure';
 import { _adventureWorldTask } from '../assetsManagerTasks/worldTasks/_adventureWorldTask';
 import { Environment } from './environment';

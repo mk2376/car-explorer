@@ -1,6 +1,10 @@
-import { AssetContainer, Observable, Observer, Sound } from '@babylonjs/core';
+import { AssetContainer, Observable, Sound } from '@babylonjs/core';
 import { GameEngine } from './components/generics/GameEngine/GameEngine';
 import { simpleSceneEngine } from './simpleScenes/simpleSceneEngine';
+
+export interface EnvVars {
+  [key: string]: string;
+}
 
 export interface Sounds {
   [key: string]: Sound;

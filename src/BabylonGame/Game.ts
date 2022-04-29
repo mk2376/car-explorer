@@ -11,15 +11,8 @@ import { startScene } from './simpleScenes/scenes/startScene';
 import { cutScene } from './simpleScenes/scenes/cutScene';
 import { loseScene } from './simpleScenes/scenes/loseScene';
 import { winScene } from './simpleScenes/scenes/winScene';
-import { GameSceneEngine } from './interfaces';
-import { now, elapsed } from './components/generics/GameEngine/helper';
-
-// environment variables
-const env = {
-  startSceneNumber: 1, // 3
-  // tells game, what part of game engines are enabled or run in dev mode (':dev')
-  dev: 'portfolio, adventure', // adventure, adventure:dev, portfolio, portfolio:dev
-};
+import { EnvVars, GameSceneEngine } from './interfaces';
+import { now, elapsed } from './components/time';
 
 // Game class is the entire game application
 export class Game {
@@ -38,15 +31,20 @@ export class Game {
   }
 
   private async _main(): Promise<void> {
+    console.info(`Environment: ${process.env.ENV_TYPE as string}`);
+
     events(this._engine, this._sceneManagement);
+
     const begining = now();
+    console.groupCollapsed('Game loading...');
     await this._loadScenes();
-    console.info(`${elapsed(begining)} GAME loaded`);
+    console.groupEnd();
+    console.info(`Game loaded: ${elapsed(begining)}s`);
 
     // Register a render loop to repeatedly render the scene
     this._engine.runRenderLoop(() => {
       this._sceneManagement._scenesByState[
-        this._sceneManagement.stateManagement.curState
+        this._sceneManagement.state.cur
       ].scene.render();
     });
   }
@@ -54,16 +52,18 @@ export class Game {
   private async _loadScenes(): Promise<void> {
     this._engine.displayLoadingUI();
 
-    const portfolioSceneEngine = env.dev.includes('portfolio')
+    // eslint-disable-next-line
+    const portfolioSceneEngine = (process.env
+      .PORTFOLIO as unknown as EnvVars['load'])
       ? new GameEnginePortfolio(
           this.canvas,
           this._engine,
-          this._sceneManagement,
-          env.dev
+          this._sceneManagement
         )
       : new GameEngine(this.canvas, this._engine, this._sceneManagement);
 
-    const adventureSceneEngine = env.dev.includes('adventure')
+    const adventureSceneEngine = (process.env
+      .ADVENTURE as unknown as EnvVars['load'])
       ? new GameEngineAdventure(
           this.canvas,
           this._engine,
@@ -71,36 +71,20 @@ export class Game {
         )
       : new GameEngine(this.canvas, this._engine, this._sceneManagement);
 
-    const startSceneUI = new startScene(this._engine, this._sceneManagement);
-    const cutSceneUI = new cutScene(this._engine, this._sceneManagement);
-    const loseSceneUI = new loseScene(this._engine, this._sceneManagement);
-    const winSceneUI = new winScene(this._engine, this._sceneManagement);
-
     // specific order has to be mentained as specified/defined in sceneManagement in ScenesWithStates
-    /*
     const scenes: Promise<GameSceneEngine>[] = [
-      startSceneUI.init(),
+      new startScene(this._engine, this._sceneManagement).init(),
       portfolioSceneEngine.init(),
-      cutSceneUI.init(),
+      new cutScene(this._engine, this._sceneManagement).init(),
       adventureSceneEngine.init(),
-      loseSceneUI.init(),
-      winSceneUI.init(),
+      new loseScene(this._engine, this._sceneManagement).init(),
+      new winScene(this._engine, this._sceneManagement).init(),
     ];
+
     this._sceneManagement.importScenes(
-      env.startSceneNumber,
+      process.env.startSceneNumber as unknown as number,
       await Promise.all(scenes)
     );
-    */
-
-    const scenes: GameSceneEngine[] = [
-      await startSceneUI.init(),
-      await portfolioSceneEngine.init(),
-      await cutSceneUI.init(),
-      await adventureSceneEngine.init(),
-      await loseSceneUI.init(),
-      await winSceneUI.init(),
-    ];
-    this._sceneManagement.importScenes(env.startSceneNumber, scenes);
 
     this._engine.hideLoadingUI();
   }
