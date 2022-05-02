@@ -1,60 +1,48 @@
-import { Effect, PostProcess } from '@babylonjs/core';
-import { Engines, GameSceneEngine, State } from '../interfaces';
-
-// mapper for scene names and state codes
-const ScenesWithStates: { key: number; state: string; scene: string }[] = [
-  { key: 0, state: 'START', scene: 'startScene' },
-  { key: 1, state: 'PORTFOLIO', scene: 'portfolioScene' },
-  { key: 2, state: 'CUTSCENE', scene: 'cutScene' },
-  { key: 3, state: 'ADVENTURE', scene: 'adventureScene' },
-  { key: 4, state: 'LOSE', scene: 'loseScene' },
-  { key: 5, state: 'WIN', scene: 'winScene' },
-];
+import { Effect, Engine, PostProcess, Scene } from '@babylonjs/core';
+import { GameSceneEngine, SceneData, Scenes } from '../interfaces';
 
 export class SceneManagement {
-  readonly _State: State = {};
-  readonly _scenes: Engines = {};
-  readonly _scenesByState: GameSceneEngine[] = [];
+  private _engine: Engine;
+  readonly scenes: SceneData[] = [];
   public state!: StateManagement;
 
-  constructor() {
-    // empty
+  constructor(engine: Engine) {
+    this._engine = engine;
+
+    // mapper for scene names and state codes
+    this.scenes.fill(
+      { scene: new Scene(this._engine), engine: {} },
+      0,
+      Object.keys(Scenes).length
+    );
   }
 
-  public importScenes(
-    initState: number,
-    loadedSceneObjects: GameSceneEngine[]
-  ) {
-    ScenesWithStates.forEach(({ key, state, scene }) => {
-      this._State[state] = key;
+  public importEngines(initState: Scenes, loadedEngines: GameSceneEngine[]) {
+    loadedEngines.forEach((engine, key) => {
+      this.scenes[key as Scenes].engine = engine;
     });
 
-    ScenesWithStates.forEach(({ key, state, scene }) => {
-      this._scenes[scene] = loadedSceneObjects[key];
-      this._scenesByState.push(loadedSceneObjects[key]);
-    });
-
-    this.state = new StateManagement(initState, this._scenesByState);
+    this.state = new StateManagement(initState, this.scenes);
   }
 }
 
 class StateManagement {
-  private _curState!: number;
-  private _prevState!: number;
+  private _curState!: Scenes;
+  private _prevState!: Scenes;
 
-  private _scenesByState: GameSceneEngine[] = [];
+  private _scenes: SceneData[];
 
-  constructor(initState: number, scenesByState: GameSceneEngine[]) {
-    this._scenesByState = scenesByState;
+  constructor(initState: Scenes, scenes: SceneData[]) {
+    this._scenes = scenes;
     registerShader();
     void this.updateCurState(initState);
   }
 
-  get cur(): number {
+  get cur(): Scenes {
     return this._curState;
   }
 
-  get prev(): number {
+  get prev(): Scenes {
     return this._prevState;
   }
 
@@ -64,16 +52,16 @@ class StateManagement {
     console.log(`stateManagement: updateCurState(${newState})`);
 
     if (wasPrevState) {
-      this._scenesByState[this._curState].scene.detachControl();
+      this._scenes[this._curState].scene.detachControl();
       await this.transition(1, 0.02);
-      await this._scenesByState[this._curState].onExit();
+      await this._scenes[this._curState].engine.onExit();
       this._prevState = this._curState;
     }
 
     this._curState = newState;
-    await this._scenesByState[this._curState].onEnter();
+    await this._scenes[this._curState].engine.onEnter();
     await this.transition(0, 0.02);
-    this._scenesByState[this._curState].scene.attachControl();
+    this._scenes[this._curState].scene.attachControl();
   }
 
   private transition(fadeLevel: number, fadeSpeed: number) {
@@ -87,7 +75,7 @@ class StateManagement {
         ['fadeLevel'],
         null,
         1.0,
-        this._scenesByState[this._curState].scene.activeCamera
+        this._scenes[this._curState].scene.activeCamera
       );
 
       postProcess.onApply = (effect) => {

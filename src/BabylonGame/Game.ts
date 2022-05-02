@@ -11,7 +11,7 @@ import { startScene } from './simpleScenes/scenes/startScene';
 import { cutScene } from './simpleScenes/scenes/cutScene';
 import { loseScene } from './simpleScenes/scenes/loseScene';
 import { winScene } from './simpleScenes/scenes/winScene';
-import { EnvVars, GameSceneEngine } from './interfaces';
+import { EnvVarsMap, GameSceneEngine } from './interfaces';
 import { now, elapsed } from './components/time';
 
 // Game class is the entire game application
@@ -54,7 +54,7 @@ export class Game {
 
     // eslint-disable-next-line
     const portfolioSceneEngine = (process.env
-      .PORTFOLIO as unknown as EnvVars['load'])
+      .PORTFOLIO as unknown as EnvVarsMap['load'])
       ? new GameEnginePortfolio(
           this.canvas,
           this._engine,
@@ -63,7 +63,7 @@ export class Game {
       : new GameEngine(this.canvas, this._engine, this._sceneManagement);
 
     const adventureSceneEngine = (process.env
-      .ADVENTURE as unknown as EnvVars['load'])
+      .ADVENTURE as unknown as EnvVarsMap['load'])
       ? new GameEngineAdventure(
           this.canvas,
           this._engine,

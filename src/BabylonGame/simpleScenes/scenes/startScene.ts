@@ -9,9 +9,9 @@ import {
 } from '@babylonjs/gui';
 import { mobileDeviceHandler } from 'src/BabylonGame/components/mobileDeviceHandler';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
-import { simpleSceneEngine } from '../simpleSceneEngine';
+import { SimpleSceneEngine } from '../simpleSceneEngine';
 
-export class startScene extends simpleSceneEngine {
+export class startScene extends SimpleSceneEngine {
   protected startBtn!: Button;
 
   constructor(engine: Engine, sceneManagement: SceneManagement) {

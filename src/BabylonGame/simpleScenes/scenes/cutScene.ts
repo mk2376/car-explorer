@@ -1,9 +1,9 @@
 import { Engine } from '@babylonjs/core';
 import { Button, Control } from '@babylonjs/gui';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
-import { simpleSceneEngine } from '../simpleSceneEngine';
+import { SimpleSceneEngine } from '../simpleSceneEngine';
 
-export class cutScene extends simpleSceneEngine {
+export class cutScene extends SimpleSceneEngine {
   constructor(engine: Engine, sceneManagement: SceneManagement) {
     super(engine, sceneManagement);
 

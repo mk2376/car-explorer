@@ -11,13 +11,13 @@ import {
   _applyPolicyPlayer,
   __meshPolicyPlayer,
   __impostorPolicyPlayer,
-} from '../assetsManagerTasks/playerTasks/_policyPlayer';
+} from '../assetsManagerTasks/_policyPlayer';
 
 import {
   _applyPolicyWorld,
   __meshPolicyWorld,
   __impostorPolicyWorld,
-} from '../assetsManagerTasks/worldTasks/_policyWorld';
+} from '../assetsManagerTasks/_policyWorld';
 
 let Ammo: typeof AmmoModule;
 

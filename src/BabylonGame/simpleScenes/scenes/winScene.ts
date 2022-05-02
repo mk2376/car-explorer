@@ -1,5 +1,5 @@
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
-import { simpleSceneEngine } from '../simpleSceneEngine';
+import { SimpleSceneEngine } from '../simpleSceneEngine';
 import { Engine } from '@babylonjs/core';
 import {
   Button,
@@ -11,7 +11,7 @@ import {
 
 import readme from 'raw-loader!./../../../../docs/credits.md';
 
-export class winScene extends simpleSceneEngine {
+export class winScene extends SimpleSceneEngine {
   constructor(engine: Engine, sceneManagement: SceneManagement) {
     super(engine, sceneManagement);
 

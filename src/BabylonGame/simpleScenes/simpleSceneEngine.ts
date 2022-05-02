@@ -4,7 +4,7 @@ import { originCamera } from '../components/generics/ui/Helper';
 import { SceneManagement } from '../components/sceneManagement';
 import { Sounds } from '../interfaces';
 
-export class simpleSceneEngine {
+export class SimpleSceneEngine {
   protected _engine: Engine;
   protected _scene: Scene;
   protected _ui: AdvancedDynamicTexture;

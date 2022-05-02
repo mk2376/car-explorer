@@ -1,10 +1,11 @@
 import { AbstractMesh, AssetContainer, PhysicsImpostor } from '@babylonjs/core';
-import { Environment } from '../../environment/environment';
-import { parseMetadata } from '../../parseMetadata';
-import { PhysicsHelper } from '../../PhysicsHelper';
+import { AssetsLoader } from '../assetsLoader';
+import { Environment } from '../environment/environment';
+import { parseMetadata } from '../parseMetadata';
+import { PhysicsHelper } from '../PhysicsHelper';
 
 export function _applyPolicyWorld(
-  this: Environment,
+  this: AssetsLoader,
   container: AssetContainer
 ) {
   //Loop through all world environment meshes that were imported
@@ -16,7 +17,7 @@ export function _applyPolicyWorld(
 }
 
 export function __impostorPolicyWorld(
-  this: Environment,
+  this: AssetsLoader,
   mesh: AbstractMesh,
   container: AssetContainer
 ) {
@@ -156,7 +157,7 @@ export function __impostorPolicyWorld(
 */
 
 export function __meshPolicyWorld(
-  this: Environment,
+  this: AssetsLoader,
   mesh: AbstractMesh,
   container: AssetContainer
 ) {

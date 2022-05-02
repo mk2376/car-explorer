@@ -3,11 +3,11 @@ import AmmoModule from 'ammojs-typed';
 import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
 import { now, elapsed } from '../../../time';
 import { LightsAdventure } from '../../Lights/LightsAdventure';
-import { _adventureWorldTask } from '../assetsManagerTasks/worldTasks/_adventureWorldTask';
+import { _containerTask } from '../as../assetsManagerTasks/worldTasks/_containerTask
 import { Environment } from './environment';
 
 export class EnvironmentAdventure extends Environment {
-  protected _adventureWorldTask = _adventureWorldTask;
+  protected _adventureWorldTask = _containerTask;
 
   readonly containerWorld = 'adventureWorld';
   readonly containerPlayer = this.containerWorld + '_player';

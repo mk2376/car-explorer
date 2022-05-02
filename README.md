@@ -11,7 +11,7 @@ npm install
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
-quasar dev
+QENV=production quasar dev
 ```
 
 ### Lint the files
@@ -29,7 +29,7 @@ npm run format
 ### Build the app for production
 
 ```bash
-quasar build
+QENV=production quasar build
 ```
 
 ### Customize the configuration
