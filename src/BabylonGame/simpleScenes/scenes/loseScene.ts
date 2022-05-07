@@ -1,11 +1,12 @@
-import { Engine, Sound } from '@babylonjs/core';
+import { Scene } from '@babylonjs/core';
 import { StackPanel, TextBlock, Button, Image } from '@babylonjs/gui';
-import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
+import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
+import { Scenes } from 'src/BabylonGame/interfaces';
 import { SimpleSceneEngine } from '../simpleSceneEngine';
 
 export class loseScene extends SimpleSceneEngine {
-  constructor(engine: Engine, sceneManagement: SceneManagement) {
-    super(engine, sceneManagement);
+  constructor(scene: Scene, state: StateManagement) {
+    super(scene, state);
 
     this.background();
     this.panel();
@@ -19,10 +20,7 @@ export class loseScene extends SimpleSceneEngine {
   }
 
   protected background() {
-    const image = new Image(
-      'lose',
-      './CarExplorer/sprites/background/loseScene.jpg'
-    );
+    const image = new Image('lose', './CarExplorer/sprites/background/loseScene.jpg');
     image.autoScale = true;
     this._ui.addControl(image);
   }
@@ -55,9 +53,7 @@ export class loseScene extends SimpleSceneEngine {
     panel.addControl(mainBtn);
 
     mainBtn.onPointerUpObservable.add(() => {
-      void this._sceneManagement.state.updateCurState(
-        this._sceneManagement._State.START
-      );
+      void this._state.updateCurState(Scenes.START);
       // this._sounds.sfx.play();
     });
   }

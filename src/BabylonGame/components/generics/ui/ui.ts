@@ -1,13 +1,7 @@
 import { Scene, Observable } from '@babylonjs/core';
-import {
-  TextBlock,
-  StackPanel,
-  AdvancedDynamicTexture,
-  Button,
-  Rectangle,
-} from '@babylonjs/gui';
+import { TextBlock, StackPanel, AdvancedDynamicTexture, Button, Rectangle } from '@babylonjs/gui';
 import { observers, Sounds } from 'src/BabylonGame/interfaces';
-import { SceneManagement } from '../../sceneManagement';
+import { StateManagement } from '../../sceneManagement';
 
 import { createSpeedBlock } from './creators/blocks';
 import { createPauseBtn } from './creators/buttons';
@@ -41,7 +35,7 @@ class mobile {
 
 export class Hud {
   protected _scene: Scene;
-  protected _sceneManagement: SceneManagement;
+  protected _state: StateManagement;
   protected _gamePaused: boolean;
 
   // UI Elements
@@ -67,20 +61,12 @@ export class Hud {
   protected _createPauseMenu = _createPauseMenu;
   protected _loadSounds = _loadSounds;
 
-  constructor(
-    scene: Scene,
-    sceneManagement: SceneManagement,
-    gamePaused: boolean
-  ) {
+  constructor(scene: Scene, state: StateManagement, gamePaused: boolean) {
     this._scene = scene;
-    this._sceneManagement = sceneManagement;
+    this._state = state;
     this._gamePaused = gamePaused;
 
-    this.ui._playerUI = AdvancedDynamicTexture.CreateFullscreenUI(
-      'UI',
-      true,
-      this._scene
-    );
+    this.ui._playerUI = AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this._scene);
     this.ui._playerUI.idealHeight = 1000;
     this.ui._playerUI.renderAtIdealSize = true;
 

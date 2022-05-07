@@ -1,5 +1,5 @@
 import { AbstractMesh, AssetContainer, IAction } from '@babylonjs/core';
-import { SceneManagement } from '../../sceneManagement';
+import { StateManagement } from '../../sceneManagement';
 import { actionHelper } from './Helper';
 import { Player } from '../player/player';
 import { actionsController } from './actionsController';
@@ -7,12 +7,8 @@ import { actionsController } from './actionsController';
 export class actionsControllerAdventure extends actionsController {
   private _onPlatformAdventure = false;
 
-  constructor(
-    player: Player,
-    container: AssetContainer,
-    sceneManagement: SceneManagement
-  ) {
-    super(player, container, sceneManagement);
+  constructor(player: Player, container: AssetContainer, state: StateManagement) {
+    super(player, container, state);
 
     this.onPortalIndicatorAdventure();
   }
@@ -27,9 +23,7 @@ export class actionsControllerAdventure extends actionsController {
     )[0];
 
     if (!onPortalIndicatorAdventure)
-      throw new Error(
-        'OnPortalIndicatorAdventure could not be found/was not provided'
-      );
+      throw new Error('OnPortalIndicatorAdventure could not be found/was not provided');
 
     actionHelper(
       this._chassisMesh,

@@ -1,20 +1,20 @@
-import { Engine, Vector3 } from '@babylonjs/core';
+import { Scene } from '@babylonjs/core';
 import { GameEngine } from '../GameEngine';
 import { coinController } from '../../coinController/coinController';
 import {
-  createCoinController,
-  createEnvironment,
-  createPlayer,
-  createActionsController,
+  _createCoinController,
+  _createPlayer,
+  _createActionsController,
   _loadSounds,
+  _createFog,
 } from './loaders';
 import { updater } from './updaters';
 import { timeController } from '../../timeContoller/timeController';
-import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
-import { GameSceneEngine } from 'src/BabylonGame/interfaces';
+import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
+import { GameSceneEngine, Scenes } from 'src/BabylonGame/interfaces';
 import { now, elapsed } from '../../../time';
 import { AdventureHud } from '../../ui/adventureUi';
-const gravityVector = new Vector3(0, -9.81, 0);
+import { SceneAssetManagerContainer } from '../../environmentloader/sceneAssetManagerContainer';
 
 export class GameEngineAdventure extends GameEngine {
   public _ui: AdventureHud;
@@ -22,50 +22,34 @@ export class GameEngineAdventure extends GameEngine {
   protected _win = false;
   protected _timeController: timeController;
 
-  protected createEnvironment = createEnvironment;
-  protected createPlayer = createPlayer;
-  protected createActionsController = createActionsController;
-  protected createCoinController = createCoinController;
+  protected _createPlayer = _createPlayer;
+  protected _createActionsController = _createActionsController;
+  protected _createCoinController = _createCoinController;
   protected _loadSounds = _loadSounds;
+  protected _createFog = _createFog;
 
   protected updater = updater;
 
   constructor(
     canvas: HTMLCanvasElement,
-    engine: Engine,
-    sceneManagement: SceneManagement
+    scene: Scene,
+    state: StateManagement,
+    assetContainers: SceneAssetManagerContainer
   ) {
-    super(canvas, engine, sceneManagement);
+    super(canvas, scene, state, assetContainers);
 
-    this._ui = new AdventureHud(
-      this._scene,
-      this._sceneManagement,
-      this._gamePaused
-    );
-
-    this._timeController = new timeController(
-      this._scene,
-      this._ui,
-      this._sceneManagement
-    );
+    this._ui = new AdventureHud(this._scene, this._state, this._gamePaused);
+    this._timeController = new timeController(this._scene, this._ui, this._state);
   }
 
   public async init(): Promise<GameSceneEngine> {
     const begining = now();
     console.info(`GameEngineAdventure init started`);
 
-    await this._initPhysics(gravityVector);
-    await this.createEnvironment();
-    await this.createPlayer();
-    await this.createActionsController();
-    await this.createCoinController(4); // has to be initialized after createActionsController as he creates 'new ActionManager'
-
-    await this._environment.addAlltoScene();
-
     await this._loadSounds();
-
+    this._createFog();
     this._gameLoop(); //handles scene related updates
-    await this._scene.whenReadyAsync();
+
     console.info(`${elapsed(begining)} GameEngineAdventure init finished`);
 
     return this;
@@ -81,19 +65,29 @@ export class GameEngineAdventure extends GameEngine {
         //dont allow pause menu interaction
         this._ui.ui.pauseBtn.isHitTestVisible = false;
 
-        void this._sceneManagement.state.updateCurState(
-          this._sceneManagement._State.WIN
-        );
+        void this._state.updateCurState(Scenes.WIN);
       }
     });
   }
 
+  private async _lazyLoading() {
+    if (!this._assetContainers.loaded) {
+      await this._assetContainers.waitContainerTasksToLoad();
+      await this._createPlayer();
+      await this._createActionsController();
+      await this._createCoinController(4); // has to be initialized after createActionsController as he creates 'new ActionManager'
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/require-await
   public async onEnter() {
+    await this._lazyLoading();
+    this._player.toInitPosition();
+    await this._scene.whenReadyAsync();
+    this._timeController.start(30 * 1000); //4 * 60 * 1000);
+
     //--SOUNDS--
     // this._sounds.game.play(); // play the gamesong
-    this._player.toInitPosition();
-    this._timeController.start(30 * 1000); //4 * 60 * 1000);
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await

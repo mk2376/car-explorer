@@ -1,26 +1,35 @@
-import { AbstractMesh, AssetContainer, PhysicsImpostor } from '@babylonjs/core';
+import { AbstractMesh, AssetContainer, PhysicsImpostor, Scene } from '@babylonjs/core';
+import { Lights } from '../../Lights/Lights';
 import { AssetsLoader } from '../assetsLoader';
-import { Environment } from '../environment/environment';
 import { parseMetadata } from '../parseMetadata';
 import { PhysicsHelper } from '../PhysicsHelper';
+import AmmoModule from 'ammojs-typed';
+
+let Ammo: typeof AmmoModule;
+
+let _scene: Scene;
+let _lights: Lights;
 
 export function _applyPolicyWorld(
   this: AssetsLoader,
-  container: AssetContainer
+  scene: Scene,
+  container: AssetContainer,
+  lights: Lights,
+  AmmoImport: typeof AmmoModule
 ) {
+  _scene = scene;
+  _lights = lights;
+  Ammo = AmmoImport;
+
   //Loop through all world environment meshes that were imported
   container.meshes.forEach((mesh) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    this.__meshPolicyWorld(mesh, container);
-    this.__impostorPolicyWorld(mesh, container);
+    __meshPolicyWorld(mesh, container);
+    __impostorPolicyWorld(mesh, container);
   });
 }
 
-export function __impostorPolicyWorld(
-  this: AssetsLoader,
-  mesh: AbstractMesh,
-  container: AssetContainer
-) {
+function __impostorPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
   if (!mesh.name.includes('objectType')) return; // is not a rigidBody
   if (mesh.physicsImpostor?.type) return; // already has physicsImpostor, if he has not it will return 'undefined'
 
@@ -36,17 +45,17 @@ export function __impostorPolicyWorld(
           mesh,
           PhysicsImpostor.ConvexHullImpostor,
           { mass: metadata.mass, friction: 1 },
-          this._scene
+          _scene
         );
       } else {
         mesh.physicsImpostor = new PhysicsImpostor(
           mesh,
           PhysicsImpostor.CustomImpostor,
           { mass: metadata.mass, friction: 1 },
-          this._scene
+          _scene
         );
 
-        const physicsHelper = new PhysicsHelper(this._scene, mesh, this.Ammo);
+        const physicsHelper = new PhysicsHelper(_scene, mesh, Ammo);
         physicsHelper.TriangleMeshShape();
         mesh.physicsImpostor.physicsBody = physicsHelper.rigidBody(metadata);
       }
@@ -57,7 +66,7 @@ export function __impostorPolicyWorld(
         mesh,
         PhysicsImpostor.BoxImpostor,
         { mass: metadata.mass, friction: 1 },
-        this._scene
+        _scene
       );
       break;
     case 'coin':
@@ -72,7 +81,7 @@ export function __impostorPolicyWorld(
         mesh,
         PhysicsImpostor.BoxImpostor,
         { mass: 0, friction: 1 },
-        this._scene
+        _scene
       );
       /*
       mesh.physicsImpostor = new PhysicsImpostor(
@@ -133,7 +142,7 @@ export function __impostorPolicyWorld(
       break;
   }
 
-  mesh.showBoundingBox = this._showBoundingBox;
+  // mesh.showBoundingBox = this._showBoundingBox;
   /*
         mesh.physicsImpostor = new PhysicsImpostor(
           mesh,
@@ -156,11 +165,7 @@ export function __impostorPolicyWorld(
     )[0];
 */
 
-export function __meshPolicyWorld(
-  this: AssetsLoader,
-  mesh: AbstractMesh,
-  container: AssetContainer
-) {
+function __meshPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
   // console.log(mesh.name);
 
   try {
@@ -184,6 +189,6 @@ export function __meshPolicyWorld(
     mesh.checkCollisions = true;
   } else {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    this._lights.addShadowCaster(mesh, true);
+    _lights.addShadowCaster(mesh, true);
   }
 }

@@ -1,39 +1,31 @@
 import { AdvancedTimer, Scene } from '@babylonjs/core';
-import { SceneManagement } from '../../sceneManagement';
+import { Scenes } from 'src/BabylonGame/interfaces';
+import { StateManagement } from '../../sceneManagement';
 import { AdventureHud } from '../ui/adventureUi';
-import { Hud } from '../ui/ui';
 
 export class timeController {
   protected _scene: Scene;
   protected _ui: AdventureHud;
-  protected _sceneManagement: SceneManagement;
+  protected _state: StateManagement;
   protected _mainTimer: AdvancedTimer<Scene>;
 
   // Game Timer
   protected _timeToEnd!: number;
   protected _fullTimeToEnd!: number;
 
-  constructor(
-    scene: Scene,
-    ui: AdventureHud,
-    sceneManagement: SceneManagement
-  ) {
+  constructor(scene: Scene, ui: AdventureHud, state: StateManagement) {
     this._scene = scene;
     this._ui = ui;
-    this._sceneManagement = sceneManagement;
+    this._state = state;
 
     this._mainTimer = this.createTimer();
   }
 
   protected callOnStart(timeToEnd: number) {
     if (!this._timeToEnd) this._timeToEnd = timeToEnd;
-    else
-      throw Error(
-        "Can't start timer, as no this._timeToEnd was defined or timeToEnd provided."
-      );
+    else throw Error("Can't start timer, as no this._timeToEnd was defined or timeToEnd provided.");
 
-    if (!this._fullTimeToEnd && this._timeToEnd)
-      this._fullTimeToEnd = this._timeToEnd;
+    if (!this._fullTimeToEnd && this._timeToEnd) this._fullTimeToEnd = this._timeToEnd;
   }
 
   public start(timeToEnd: number) {
@@ -54,10 +46,7 @@ export class timeController {
 
   public resume() {
     if (this._timeToEnd) this._mainTimer.start(this._timeToEnd);
-    else
-      throw Error(
-        "Can't resume timer, as you haven't started the timer before."
-      );
+    else throw Error("Can't resume timer, as you haven't started the timer before.");
   }
 
   protected createTimer(): AdvancedTimer<Scene> {
@@ -66,9 +55,7 @@ export class timeController {
       contextObservable: this._scene.onBeforeRenderObservable,
     });
     advancedTimer.onEachCountObservable.add((data) => {
-      const time =
-        this.normalizeTime(this._fullTimeToEnd) -
-        this.normalizeTime(data.deltaTime);
+      const time = this.normalizeTime(this._fullTimeToEnd) - this.normalizeTime(data.deltaTime);
 
       this._ui.observers.timer!.notifyObservers([time]);
     });
@@ -77,9 +64,7 @@ export class timeController {
       console.log('Timer aborted/stopped');
     });
     advancedTimer.onTimerEndedObservable.add(() => {
-      void this._sceneManagement.state.updateCurState(
-        this._sceneManagement._State.LOSE
-      );
+      void this._state.updateCurState(Scenes.LOSE);
     });
 
     return advancedTimer;

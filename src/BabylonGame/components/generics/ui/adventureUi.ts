@@ -1,6 +1,6 @@
 import { Scene, Observable } from '@babylonjs/core';
 import { adventureObservers } from 'src/BabylonGame/interfaces';
-import { SceneManagement } from '../../sceneManagement';
+import { StateManagement } from '../../sceneManagement';
 import { createCrystalsBlock, createTimeBlock } from './creators/blocks';
 import { _createControlsMenu } from './creators/controlsMenu';
 import { _createPauseMenu } from './creators/pauseMenu';
@@ -13,12 +13,8 @@ export class AdventureHud extends Hud {
 
   readonly observers!: adventureObservers;
 
-  constructor(
-    scene: Scene,
-    sceneManagement: SceneManagement,
-    gamePaused: boolean
-  ) {
-    super(scene, sceneManagement, gamePaused);
+  constructor(scene: Scene, state: StateManagement, gamePaused: boolean) {
+    super(scene, state, gamePaused);
 
     // Observable
 

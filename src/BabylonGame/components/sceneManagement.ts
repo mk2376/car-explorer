@@ -9,12 +9,8 @@ export class SceneManagement {
   constructor(engine: Engine) {
     this._engine = engine;
 
-    // mapper for scene names and state codes
-    this.scenes.fill(
-      { scene: new Scene(this._engine), engine: {} },
-      0,
-      Object.keys(Scenes).length
-    );
+    // automatic scene object generator
+    this.scenes.fill({ scene: new Scene(this._engine), engine: {} }, 0, Object.keys(Scenes).length);
   }
 
   public importEngines(initState: Scenes, loadedEngines: GameSceneEngine[]) {
@@ -26,7 +22,7 @@ export class SceneManagement {
   }
 }
 
-class StateManagement {
+export class StateManagement {
   private _curState!: Scenes;
   private _prevState!: Scenes;
 

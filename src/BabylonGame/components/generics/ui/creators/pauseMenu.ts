@@ -1,5 +1,6 @@
 import { Effect, PostProcess } from '@babylonjs/core';
 import { Rectangle, Control, StackPanel, Button, Image } from '@babylonjs/gui';
+import { Scenes } from 'src/BabylonGame/interfaces';
 import { Hud } from '../ui';
 
 //---- Pause Menu Popup ----
@@ -95,9 +96,7 @@ export function _createPauseMenu(this: Hud): void {
   stackPanel.addControl(quitBtn);
 
   quitBtn.onPointerDownObservable.add(() => {
-    void this._sceneManagement.state.updateCurState(
-      this._sceneManagement._State.START
-    );
+    void this._state.updateCurState(Scenes.START);
 
     //--SOUNDS--
     // this._sounds.quitSfx.play();

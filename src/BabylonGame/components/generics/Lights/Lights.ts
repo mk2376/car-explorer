@@ -12,7 +12,7 @@ import {
 
 export class Lights {
   protected _scene: Scene;
-  readonly _container: AssetContainer;
+  protected _container: AssetContainer;
   protected _hemiLight!: HemisphericLight;
   protected _directionalLight: DirectionalLight[] = [];
   protected _shadowGenerator: ShadowGenerator[] = [];
@@ -21,6 +21,10 @@ export class Lights {
     this._scene = scene;
     this._container = new AssetContainer(this._scene);
     // this.directionalLight.setEnabled(true);
+  }
+
+  get container() {
+    return this._container;
   }
 
   public addShadowCaster(mesh: AbstractMesh, subMeshes?: boolean) {
@@ -39,11 +43,7 @@ export class Lights {
   }
 
   private createCarLight(): PointLight {
-    const pointLight = new PointLight(
-      'pointLight',
-      new Vector3(0, 1, 0),
-      this._scene
-    );
+    const pointLight = new PointLight('pointLight', new Vector3(0, 1, 0), this._scene);
     this._scene.removeLight(pointLight);
 
     pointLight.diffuse = new Color3(172 / 255, 246 / 255, 250 / 255);

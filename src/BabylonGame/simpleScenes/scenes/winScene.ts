@@ -1,19 +1,14 @@
-import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
+import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
 import { SimpleSceneEngine } from '../simpleSceneEngine';
-import { Engine } from '@babylonjs/core';
-import {
-  Button,
-  Control,
-  Rectangle,
-  StackPanel,
-  TextBlock,
-} from '@babylonjs/gui';
+import { Scene } from '@babylonjs/core';
+import { Button, Control, Rectangle, StackPanel, TextBlock } from '@babylonjs/gui';
 
 import readme from 'raw-loader!./../../../../docs/credits.md';
+import { Scenes } from 'src/BabylonGame/interfaces';
 
 export class winScene extends SimpleSceneEngine {
-  constructor(engine: Engine, sceneManagement: SceneManagement) {
-    super(engine, sceneManagement);
+  constructor(scene: Scene, state: StateManagement) {
+    super(scene, state);
 
     this.background();
     this.credits();
@@ -97,9 +92,7 @@ export class winScene extends SimpleSceneEngine {
     this._ui.addControl(btn);
 
     btn.onPointerDownObservable.add(() => {
-      void this._sceneManagement.state.updateCurState(
-        this._sceneManagement._State.START
-      );
+      void this._state.updateCurState(Scenes.START);
     });
   }
 }

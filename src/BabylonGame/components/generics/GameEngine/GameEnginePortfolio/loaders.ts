@@ -1,36 +1,28 @@
-import { Sound } from '@babylonjs/core';
+import {
+  AssetContainer,
+  Color3,
+  CubeTexture,
+  MeshBuilder,
+  Sound,
+  StandardMaterial,
+  Texture,
+} from '@babylonjs/core';
 import { actionsControllerPortfolio } from '../../actionsController/actionsControllerPortfolio';
-import { EnvironmentPortfolio } from '../../loader/environment/environmentPortfolio';
 import { Player } from '../../player/player';
 import { now, elapsed } from '../../../time';
 import { GameEnginePortfolio } from './GameEnginePortfolio';
+import { ContainerDefinitions } from 'src/BabylonGame/interfaces';
 
 const gameEngineName = 'portfolio';
 
-export async function createEnvironment(this: GameEnginePortfolio) {
-  const begining = now();
-
-  this._environment = new EnvironmentPortfolio(
-    this._scene,
-    this._sceneManagement,
-    this.Ammo
-  );
-  // eslint-disable-next-line @typescript-eslint/await-thenable
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  await this._environment.load();
-  await this._scene.whenReadyAsync();
-
-  console.info(`${elapsed(begining)} ${gameEngineName} environment loaded`);
-}
-
 // eslint-disable-next-line @typescript-eslint/require-await
-export async function createPlayer(this: GameEnginePortfolio) {
+export async function _createPlayer(this: GameEnginePortfolio) {
   const begining = now();
 
   this._player = new Player(
     this._canvas,
     this._scene,
-    this._environment._containers[this._environment.containerPlayer],
+    this._assetContainers.containers[ContainerDefinitions.Player].container as AssetContainer,
     this._ui,
     this.gamePaused,
     this.Ammo
@@ -42,19 +34,18 @@ export async function createPlayer(this: GameEnginePortfolio) {
 }
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export async function createActionsController(this: GameEnginePortfolio) {
+export async function _createActionsController(this: GameEnginePortfolio) {
   const begining = now();
 
   this._actionsController = new actionsControllerPortfolio(
     this._player,
-    this._environment._containers[this._environment.containerWorld],
-    this._sceneManagement
+    this._assetContainers.containers[ContainerDefinitions.PortfolioWorld]
+      .container as AssetContainer,
+    this._state
   );
   await this._scene.whenReadyAsync();
 
-  console.info(
-    `${elapsed(begining)} ${gameEngineName} actionsController created`
-  );
+  console.info(`${elapsed(begining)} ${gameEngineName} actionsController created`);
 }
 
 //loading sounds for the game scene
@@ -80,4 +71,26 @@ export async function _loadSounds(this: GameEnginePortfolio) {
   await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} sounds loaded`);
+}
+
+export function _createSkyBox(this: GameEnginePortfolio) {
+  const skybox = MeshBuilder.CreateBox('skyBox', { size: 3000 }, this._scene);
+  const skyboxMaterial = new StandardMaterial('skyBox', this._scene);
+  skyboxMaterial.backFaceCulling = false;
+  /*
+  skyboxMaterial.reflectionTexture = new HDRCubeTexture(
+    './CarExplorer/textures/sky/CasualDay4K.hdr',
+    this._scene,
+    1024,
+    true
+  );
+  */
+  skyboxMaterial.reflectionTexture = new CubeTexture(
+    './CarExplorer/textures/sky/cubemap/CasualDay4K',
+    this._scene
+  );
+  skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
+  skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
+  skyboxMaterial.specularColor = new Color3(0, 0, 0);
+  skybox.material = skyboxMaterial;
 }

@@ -1,14 +1,11 @@
-import {
-  AssetContainer,
-  AssetsManager,
-  Observable,
-  Scene,
-  Sound,
-} from '@babylonjs/core';
+import { AssetContainer, Observable, Scene, Sound } from '@babylonjs/core';
 import { GameEngine } from './components/generics/GameEngine/GameEngine';
+import { Lights } from './components/generics/Lights/Lights';
 import { SimpleSceneEngine } from './simpleScenes/simpleSceneEngine';
+import AmmoModule from 'ammojs-typed';
+import { SceneAssetManagerContainer } from './components/generics/environmentloader/sceneAssetManagerContainer';
 
-// empty objects realizes using:
+// empty objects realized using:
 export type EmptyObject = Record<string, never>;
 
 export interface EnvVarsMap {
@@ -26,21 +23,25 @@ export interface Metadata {
   objectType: string;
 }
 
-export type AssetsManagerContainers = {
-  [key in Scenes]: Containers | EmptyObject;
+export type SceneAssetManagerContainers = {
+  [key in Scenes]?: SceneAssetManagerContainer;
 };
 
-export interface Containers {
-  assetsManager: AssetsManager;
-  containers: ContainerData[];
-}
+export type Containers = {
+  [key in ContainerDefinitions]?: ContainerData | Lights;
+};
 
 export interface ContainerData {
   name: string;
   path: string;
   file: string;
-  container: AssetContainer | EmptyObject;
-  policy: (container: AssetContainer) => void;
+  container?: AssetContainer;
+  policy: (
+    scene: Scene,
+    container: AssetContainer,
+    lights: Lights,
+    AmmoImport: typeof AmmoModule
+  ) => void;
 }
 
 export interface observers {
@@ -64,4 +65,12 @@ export enum Scenes {
 export interface SceneData {
   scene: Scene;
   engine: GameSceneEngine;
+}
+
+export enum ContainerDefinitions {
+  Lights = 0,
+  PortfolioWorld,
+  AdventureWorld,
+  Player,
+  Coin,
 }

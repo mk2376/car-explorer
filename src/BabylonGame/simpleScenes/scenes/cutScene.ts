@@ -1,11 +1,12 @@
-import { Engine } from '@babylonjs/core';
+import { Scene } from '@babylonjs/core';
 import { Button, Control } from '@babylonjs/gui';
-import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
+import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
+import { Scenes } from 'src/BabylonGame/interfaces';
 import { SimpleSceneEngine } from '../simpleSceneEngine';
 
 export class cutScene extends SimpleSceneEngine {
-  constructor(engine: Engine, sceneManagement: SceneManagement) {
-    super(engine, sceneManagement);
+  constructor(scene: Scene, state: StateManagement) {
+    super(scene, state);
 
     // this.background();
     this.dialog();
@@ -69,18 +70,13 @@ export class cutScene extends SimpleSceneEngine {
     this._ui.addControl(skipBtn);
 
     skipBtn.onPointerDownObservable.add(() => {
-      void this._sceneManagement.state.updateCurState(
-        this._sceneManagement._State.ADVENTURE
-      );
+      void this._state.updateCurState(Scenes.ADVENTURE);
     });
   }
 
   protected progressButton() {
     //--PROGRESS DIALOGUE--
-    const next = Button.CreateImageOnlyButton(
-      'next',
-      './CarExplorer/sprites/arrowBtn.png'
-    );
+    const next = Button.CreateImageOnlyButton('next', './CarExplorer/sprites/arrowBtn.png');
     next.rotation = Math.PI / 2;
     next.thickness = 0;
     next.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;

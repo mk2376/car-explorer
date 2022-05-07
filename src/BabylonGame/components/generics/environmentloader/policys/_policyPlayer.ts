@@ -1,31 +1,37 @@
-import { AbstractMesh, AssetContainer, PhysicsImpostor } from '@babylonjs/core';
+import { AbstractMesh, AssetContainer, PhysicsImpostor, Scene } from '@babylonjs/core';
+import { Lights } from '../../Lights/Lights';
 import { AssetsLoader } from '../assetsLoader';
-import { Environment } from '../environment/environment';
 import { parseMetadata } from '../parseMetadata';
+import AmmoModule from 'ammojs-typed';
+
+let Ammo: typeof AmmoModule;
+
+let _scene: Scene;
+let _lights: Lights;
 
 export function _applyPolicyPlayer(
   this: AssetsLoader,
-  container: AssetContainer
+  scene: Scene,
+  container: AssetContainer,
+  lights: Lights,
+  AmmoImport: typeof AmmoModule
 ) {
-  //Loop through all world environment meshes that were imported
+  _scene = scene;
+  _lights = lights;
+  Ammo = AmmoImport;
 
+  //Loop through all world environment meshes that were imported
   container.meshes.forEach((mesh) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    this.__impostorPolicyPlayer(mesh, container);
+    __impostorPolicyPlayer(mesh, container);
   });
 
-  const playerMesh = container.meshes.filter((mesh) =>
-    mesh.name.includes('player')
-  )[0];
+  const playerMesh = container.meshes.filter((mesh) => mesh.name.includes('player'))[0];
 
-  this.__meshPolicyPlayer(playerMesh, container);
+  __meshPolicyPlayer(playerMesh, container);
 }
 
-export function __impostorPolicyPlayer(
-  this: AssetsLoader,
-  mesh: AbstractMesh,
-  container: AssetContainer
-) {
+function __impostorPolicyPlayer(mesh: AbstractMesh, container: AssetContainer) {
   if (!mesh.name.includes('objectType')) return;
   if (mesh.physicsImpostor?.type) return; // already has physicsImpostor, if he has not it will return 'undefined'
 
@@ -36,9 +42,7 @@ export function __impostorPolicyPlayer(
       // console.log('Player found');
 
       // load/create physicsImpostor of prop mesh first
-      const prop = container.meshes.filter((mesh) =>
-        mesh.name.includes('prop')
-      )[0];
+      const prop = container.meshes.filter((mesh) => mesh.name.includes('prop'))[0];
 
       const metadataProp = parseMetadata(prop.name);
 
@@ -46,12 +50,10 @@ export function __impostorPolicyPlayer(
         prop,
         PhysicsImpostor.ConvexHullImpostor,
         { mass: 0 },
-        this._scene
+        _scene
       );
 
-      const wheels = container.meshes.filter((mesh) =>
-        mesh.name.includes('wheel')
-      );
+      const wheels = container.meshes.filter((mesh) => mesh.name.includes('wheel'));
 
       wheels.forEach((mesh) => {
         mesh.physicsImpostor = new PhysicsImpostor(
@@ -61,7 +63,7 @@ export function __impostorPolicyPlayer(
             mass: 0,
             disableBidirectionalTransformation: true,
           },
-          this._scene
+          _scene
         );
       });
 
@@ -71,20 +73,16 @@ export function __impostorPolicyPlayer(
         // PhysicsImpostor.CustomImpostor,
         PhysicsImpostor.NoImpostor,
         { mass: metadata.mass, friction: 5, restitution: 2 },
-        this._scene
+        _scene
       );
 
       break;
   }
 
-  mesh.showBoundingBox = this._showBoundingBox;
+  // mesh.showBoundingBox = this._showBoundingBox;
 }
 
-export function __meshPolicyPlayer(
-  this: AssetsLoader,
-  mesh: AbstractMesh,
-  container: AssetContainer
-) {
+export function __meshPolicyPlayer(mesh: AbstractMesh, container: AssetContainer) {
   // console.log(mesh.name);
 
   mesh.receiveShadows = true;
@@ -94,7 +92,7 @@ export function __meshPolicyPlayer(
     mesh.checkCollisions = true;
   }
 
-  this._lights.addShadowCaster(mesh, true);
+  _lights.addShadowCaster(mesh, true);
 }
 
 /*

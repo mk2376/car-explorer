@@ -1,21 +1,15 @@
-import { Engine, Sound } from '@babylonjs/core';
-import {
-  StackPanel,
-  Button,
-  TextBlock,
-  Rectangle,
-  Control,
-  Image,
-} from '@babylonjs/gui';
+import { Scene } from '@babylonjs/core';
+import { StackPanel, Button, TextBlock, Rectangle, Control, Image } from '@babylonjs/gui';
 import { mobileDeviceHandler } from 'src/BabylonGame/components/mobileDeviceHandler';
-import { SceneManagement } from 'src/BabylonGame/components/sceneManagement';
+import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
+import { Scenes } from 'src/BabylonGame/interfaces';
 import { SimpleSceneEngine } from '../simpleSceneEngine';
 
 export class startScene extends SimpleSceneEngine {
   protected startBtn!: Button;
 
-  constructor(engine: Engine, sceneManagement: SceneManagement) {
-    super(engine, sceneManagement);
+  constructor(scene: Scene, state: StateManagement) {
+    super(scene, state);
 
     this.background();
     this.title();
@@ -31,10 +25,7 @@ export class startScene extends SimpleSceneEngine {
   }
 
   protected background() {
-    const startbg = new Image(
-      'startbg',
-      './CarExplorer/sprites/background/startScene.jpg'
-    );
+    const startbg = new Image('startbg', './CarExplorer/sprites/background/startScene.jpg');
     this._ui.addControl(startbg);
   }
 
@@ -66,9 +57,7 @@ export class startScene extends SimpleSceneEngine {
       //sounds
       // this._sounds.sfx.play();
 
-      void this._sceneManagement.state.updateCurState(
-        this._sceneManagement._State.PORTFOLIO
-      );
+      void this._state.updateCurState(Scenes.PORTFOLIO);
     });
 
     this.startBtn = startBtn;
@@ -106,10 +95,7 @@ export class startScene extends SimpleSceneEngine {
       rect.addControl(image);
 
       //alert message
-      const alert = new TextBlock(
-        'alert',
-        'For the best experience, please rotate your device'
-      );
+      const alert = new TextBlock('alert', 'For the best experience, please rotate your device');
       alert.fontSize = '16px';
       alert.fontFamily = 'Viga';
       alert.color = 'black';
