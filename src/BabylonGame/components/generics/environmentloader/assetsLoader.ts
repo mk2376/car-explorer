@@ -52,7 +52,6 @@ export class AssetsLoader {
           ...process.env.PORTFOLIO_gravityVector!.split(',').map((item) => parseFloat(item))
         )
       ),
-      /*
       [Scenes.ADVENTURE]: new SceneAssetManagerContainer(
         this._sceneManagement.scenes[Scenes.ADVENTURE].scene,
         {
@@ -64,7 +63,7 @@ export class AssetsLoader {
         new Vector3(
           ...process.env.ADVENTURE_gravityVector!.split(',').map((item) => parseFloat(item))
         )
-      ),*/
+      ),
     };
   }
 

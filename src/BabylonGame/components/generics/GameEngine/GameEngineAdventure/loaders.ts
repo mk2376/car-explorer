@@ -8,8 +8,7 @@ import { ContainerDefinitions } from 'src/BabylonGame/interfaces';
 
 const gameEngineName = 'adventure';
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function _createPlayer(this: GameEngineAdventure) {
+export function _createPlayer(this: GameEngineAdventure) {
   const begining = now();
 
   this._player = new Player(
@@ -20,13 +19,11 @@ export async function _createPlayer(this: GameEngineAdventure) {
     this.gamePaused
   );
   this._player.load();
-  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} player loaded`);
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function _createActionsController(this: GameEngineAdventure) {
+export function _createActionsController(this: GameEngineAdventure) {
   const begining = now();
 
   this._actionsController = new actionsControllerAdventure(
@@ -35,13 +32,11 @@ export async function _createActionsController(this: GameEngineAdventure) {
       .container as AssetContainer,
     this._state
   );
-  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} actionsController created`);
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function _createCoinController(this: GameEngineAdventure, numOfCoins: number) {
+export function _createCoinController(this: GameEngineAdventure, numOfCoins: number) {
   const begining = now();
 
   this._coinController = new coinController(
@@ -54,13 +49,11 @@ export async function _createCoinController(this: GameEngineAdventure, numOfCoin
   this._coinController.init(
     this._assetContainers.containers[ContainerDefinitions.Coin]!.container as AssetContainer
   );
-  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} coinController created`);
 }
 
-//loading sounds for the game scene
-export async function _loadSounds(this: GameEngineAdventure) {
+export function _loadSounds(this: GameEngineAdventure) {
   const begining = now();
 
   /*
@@ -92,15 +85,17 @@ export async function _loadSounds(this: GameEngineAdventure) {
   this._sounds.end = end;
   */
 
-  await this._scene.whenReadyAsync();
-
   console.info(`${elapsed(begining)} ${gameEngineName} sounds loaded`);
 }
 
 export function _createFog(this: GameEngineAdventure) {
+  const begining = now();
+
   this._scene.fogMode = Scene.FOGMODE_EXP2;
   this._scene.fogDensity = 0.04;
   this._scene.fogColor = new Color3(0.9, 0.9, 0.85);
+
+  console.info(`${elapsed(begining)} ${gameEngineName} _createFog loaded`);
 }
 
 /*
