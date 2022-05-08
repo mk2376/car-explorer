@@ -12,6 +12,7 @@ import {
 import AmmoModule from 'ammojs-typed';
 import { PlayerInput } from './inputController';
 import { Hud } from '../ui/ui';
+import { Physics } from '../../physics';
 
 let Ammo: typeof AmmoModule;
 
@@ -79,8 +80,7 @@ export class Player {
     scene: Scene,
     container: AssetContainer,
     ui: Hud,
-    gamePaused: boolean,
-    AmmoImport: typeof AmmoModule
+    gamePaused: boolean
   ) {
     this._engine = scene.getEngine();
     this._canvas = canvas;
@@ -88,16 +88,13 @@ export class Player {
     this._container = container;
     this._ui = ui;
     this._gamePaused = gamePaused;
-    Ammo = AmmoImport;
+
+    Ammo = Physics.getInstance();
 
     this.wheelDirectionCS0 = new Ammo.btVector3(0, -1, 0);
     this.wheelAxleCS = new Ammo.btVector3(-1, 0, 0);
 
-    this._playerInput = new PlayerInput(
-      this._scene,
-      this._ui,
-      this._gamePaused
-    );
+    this._playerInput = new PlayerInput(this._scene, this._ui, this._gamePaused);
   }
 
   get chassisMesh() {
@@ -166,28 +163,16 @@ export class Player {
         }
       }
 
-      this._vehicle.applyEngineForce(
-        this._engineForce,
-        wheels.FRONT_LEFT.index
-      );
-      this._vehicle.applyEngineForce(
-        this._engineForce,
-        wheels.FRONT_RIGHT.index
-      );
+      this._vehicle.applyEngineForce(this._engineForce, wheels.FRONT_LEFT.index);
+      this._vehicle.applyEngineForce(this._engineForce, wheels.FRONT_RIGHT.index);
 
       this._vehicle.setBrake(this._breakingForce / 2, wheels.FRONT_LEFT.index);
       this._vehicle.setBrake(this._breakingForce / 2, wheels.FRONT_RIGHT.index);
       this._vehicle.setBrake(this._breakingForce, wheels.BACK_LEFT.index);
       this._vehicle.setBrake(this._breakingForce, wheels.BACK_RIGHT.index);
 
-      this._vehicle.setSteeringValue(
-        this._vehicleSteering,
-        wheels.FRONT_LEFT.index
-      );
-      this._vehicle.setSteeringValue(
-        this._vehicleSteering,
-        wheels.FRONT_RIGHT.index
-      );
+      this._vehicle.setSteeringValue(this._vehicleSteering, wheels.FRONT_LEFT.index);
+      this._vehicle.setSteeringValue(this._vehicleSteering, wheels.FRONT_RIGHT.index);
 
       let tm, p, q, i;
       const n = this._vehicle.getNumWheels();
@@ -197,12 +182,7 @@ export class Player {
         p = tm.getOrigin();
         q = tm.getRotation();
         this._wheelMeshes[i].position.set(p.x(), p.y(), p.z());
-        this._wheelMeshes[i].rotationQuaternion!.set(
-          q.x(),
-          q.y(),
-          q.z(),
-          q.w()
-        );
+        this._wheelMeshes[i].rotationQuaternion!.set(q.x(), q.y(), q.z(), q.w());
         this._wheelMeshes[i].rotate(Axis.Z, Math.PI);
       }
 
@@ -222,8 +202,7 @@ export class Player {
 
     this._chassisMesh = mesh!;
     this._chassisPhysicsImpostor = this._chassisMesh.physicsImpostor!;
-    this._chassisRigidBody = this._chassisPhysicsImpostor
-      .physicsBody as AmmoModule.btRigidBody;
+    this._chassisRigidBody = this._chassisPhysicsImpostor.physicsBody as AmmoModule.btRigidBody;
     this._chassisRigidBody.setActivationState(4);
     this._RaycastVehicle(this._chassisRigidBody);
 
@@ -304,11 +283,7 @@ export class Player {
   }
 
   private _bindFollowCamera(mesh: AbstractMesh, canvas: HTMLCanvasElement) {
-    const camera = new FollowCamera(
-      'FollowCam',
-      new Vector3(0, 10, -10),
-      this._scene
-    );
+    const camera = new FollowCamera('FollowCam', new Vector3(0, 10, -10), this._scene);
     camera.radius = 10;
     camera.heightOffset = 4;
     camera.rotationOffset = 0;
@@ -321,9 +296,7 @@ export class Player {
 
   private _RaycastVehicle(body: AmmoModule.btRigidBody) {
     // eslint-disable-next-line
-    const physicsWorld = this._scene
-      .getPhysicsEngine()!
-      .getPhysicsPlugin().world;
+    const physicsWorld = this._scene.getPhysicsEngine()!.getPhysicsPlugin().world;
 
     this._tuning = new Ammo.btVehicleTuning();
     this._tuning.set_m_suspensionStiffness(36);
@@ -344,12 +317,9 @@ export class Player {
   public toInitPosition() {
     const player = this._chassisMesh;
     const initPlayer = this._scene.getMeshByName('initPosition');
-    if (!initPlayer)
-      console.log('mesh could not be found, reverting to manual');
+    if (!initPlayer) console.log('mesh could not be found, reverting to manual');
 
-    player.position = initPlayer
-      ? initPlayer.position.clone()
-      : new Vector3(0, 5, 0);
+    player.position = initPlayer ? initPlayer.position.clone() : new Vector3(0, 5, 0);
     player.rotationQuaternion =
       initPlayer && initPlayer.rotationQuaternion
         ? initPlayer.rotationQuaternion.clone()

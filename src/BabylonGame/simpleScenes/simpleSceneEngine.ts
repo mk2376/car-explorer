@@ -1,8 +1,9 @@
 import { Engine, Scene } from '@babylonjs/core';
 import { AdvancedDynamicTexture } from '@babylonjs/gui';
+import { SceneAssetManagerContainer } from '../components/generics/environmentloader/sceneAssetManagerContainer';
 import { originCamera } from '../components/generics/ui/Helper';
 import { StateManagement } from '../components/sceneManagement';
-import { SceneAssetManagerContainer, Sounds } from '../interfaces';
+import { Sounds } from '../interfaces';
 
 export class SimpleSceneEngine {
   protected _engine: Engine;
@@ -25,15 +26,11 @@ export class SimpleSceneEngine {
     this._ui = AdvancedDynamicTexture.CreateFullscreenUI('UI', true, this._scene);
   }
 
-  get scene() {
-    return this._scene;
-  }
-
   public onEnter() {
-    // throw new Error('method not yet implemented');
+    // throw new Error('method not implemented in extended classes');
   }
 
   public onExit() {
-    // throw new Error('method not yet implemented');
+    // throw new Error('method not implemented in extended classes');
   }
 }

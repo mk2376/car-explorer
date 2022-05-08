@@ -22,7 +22,6 @@ export function _applyPolicyPlayer(
 
   //Loop through all world environment meshes that were imported
   container.meshes.forEach((mesh) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     __impostorPolicyPlayer(mesh, container);
   });
 
@@ -96,7 +95,7 @@ export function __meshPolicyPlayer(mesh: AbstractMesh, container: AssetContainer
 }
 
 /*
-  const physicsHelper = new PhysicsHelper(this._scene, mesh, this.Ammo);
+  const physicsHelper = new PhysicsHelper(this._scene, mesh, Physics.getInstance());
   physicsHelper.ConvexHullShape();
   // eslint-disable-next-line
   const body = physicsHelper.rigidBody(metadata);

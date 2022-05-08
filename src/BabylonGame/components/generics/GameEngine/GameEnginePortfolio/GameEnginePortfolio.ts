@@ -7,6 +7,7 @@ import { elapsed, now } from '../../../time';
 import { SceneAssetManagerContainer } from '../../environmentloader/sceneAssetManagerContainer';
 
 export class GameEnginePortfolio extends GameEngine {
+  protected _loaded = false;
   protected _createPlayer = _createPlayer;
   protected _createActionsController = _createActionsController;
   protected _loadSounds = _loadSounds;
@@ -21,12 +22,13 @@ export class GameEnginePortfolio extends GameEngine {
     super(canvas, scene, state, assetContainers);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async init(): Promise<GameSceneEngine> {
     const begining = now();
     console.info(`GameEnginePortfolio init started`);
 
-    await this._loadSounds();
-    this._createSkyBox();
+    this._loadSounds();
+    void this._lazyLoading();
 
     console.info(`${elapsed(begining)} GameEnginePortfolio init finished`);
 
@@ -34,20 +36,35 @@ export class GameEnginePortfolio extends GameEngine {
   }
 
   private async _lazyLoading() {
-    if (!this._assetContainers.loaded) {
-      await this._assetContainers.waitContainerTasksToLoad();
-      await this._createPlayer();
-      await this._createActionsController();
-    }
+    const begining = now();
+
+    if (!this._assetContainers.loaded) await until(() => this._assetContainers.loaded);
+    if (!this._player) this._createPlayer();
+    if (!this._actionsController) this._createActionsController();
+
+    this._createSkyBox();
+    this._assetContainers.addAllToScene();
+
+    this._loaded = true;
+    console.info(`${elapsed(begining)} _lazyLoading finished`);
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   public async onEnter() {
-    await this._lazyLoading();
+    await until(() => this._loaded);
     this._player.toInitPosition();
     await this._scene.whenReadyAsync();
 
     //--SOUNDS--
     // this._sounds.game.play(); // play the gamesong
   }
+}
+
+function until(conditionFunction: () => boolean) {
+  const poll = (resolve: (value: unknown) => void) => {
+    if (conditionFunction()) resolve(undefined);
+    else setTimeout((_) => poll(resolve), 10);
+  };
+
+  return new Promise(poll);
 }

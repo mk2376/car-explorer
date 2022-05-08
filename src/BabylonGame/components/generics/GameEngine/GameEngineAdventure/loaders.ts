@@ -15,10 +15,9 @@ export async function _createPlayer(this: GameEngineAdventure) {
   this._player = new Player(
     this._canvas,
     this._scene,
-    this._assetContainers.containers[ContainerDefinitions.Player].container as AssetContainer,
+    this._assetContainers.containers[ContainerDefinitions.Player]!.container as AssetContainer,
     this._ui,
-    this.gamePaused,
-    this.Ammo
+    this.gamePaused
   );
   this._player.load();
   await this._scene.whenReadyAsync();
@@ -32,7 +31,7 @@ export async function _createActionsController(this: GameEngineAdventure) {
 
   this._actionsController = new actionsControllerAdventure(
     this._player,
-    this._assetContainers.containers[ContainerDefinitions.AdventureWorld]
+    this._assetContainers.containers[ContainerDefinitions.AdventureWorld]!
       .container as AssetContainer,
     this._state
   );
@@ -53,7 +52,7 @@ export async function _createCoinController(this: GameEngineAdventure, numOfCoin
   );
 
   this._coinController.init(
-    this._assetContainers.containers[ContainerDefinitions.Coin].container as AssetContainer
+    this._assetContainers.containers[ContainerDefinitions.Coin]!.container as AssetContainer
   );
   await this._scene.whenReadyAsync();
 

@@ -9,13 +9,11 @@ export function events(engine: Engine, sceneManagement: SceneManagement): void {
       console.log('Babylon inspector enabled.');
       const curState = sceneManagement.state.cur;
 
-      if (
-        sceneManagement._scenesByState[curState].scene.debugLayer.isVisible()
-      ) {
-        sceneManagement._scenesByState[curState].scene.debugLayer.hide();
+      if (sceneManagement.scenes[curState].scene.debugLayer.isVisible()) {
+        sceneManagement.scenes[curState].scene.debugLayer.hide();
       } else {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        sceneManagement._scenesByState[curState].scene.debugLayer.show();
+        sceneManagement.scenes[curState].scene.debugLayer.show();
       }
     }
   });

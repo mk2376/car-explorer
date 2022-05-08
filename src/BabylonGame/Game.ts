@@ -1,6 +1,7 @@
 import { Engine } from '@babylonjs/core';
 import { modCanvas } from './components/modCanvas';
 import { events } from './components/events';
+import { Physics } from './components/physics';
 
 import { SceneManagement } from './components/sceneManagement';
 import { GameEnginePortfolio } from './components/generics/GameEngine/GameEnginePortfolio/GameEnginePortfolio';
@@ -13,7 +14,6 @@ import { winScene } from './simpleScenes/scenes/winScene';
 import { GameSceneEngine, Scenes } from './interfaces';
 import { now, elapsed } from './components/time';
 import { AssetsLoader } from './components/generics/environmentloader/assetsLoader';
-import AmmoModule from 'ammojs-typed';
 import { SceneAssetManagerContainer } from './components/generics/environmentloader/sceneAssetManagerContainer';
 
 // Game class is the entire game application
@@ -21,7 +21,6 @@ export class Game {
   private _canvas: HTMLCanvasElement;
   private _engine: Engine;
   private _sceneManagement: SceneManagement;
-  private _physics!: typeof AmmoModule;
 
   constructor(private canvas: HTMLCanvasElement) {
     this._canvas = modCanvas(canvas, 'gameCanvas');
@@ -41,10 +40,14 @@ export class Game {
 
     const begining = now();
     console.groupCollapsed('Game loading...');
-    await this._initPhysics();
+    await Physics.init();
     await this._loadEngines();
     console.groupEnd();
     console.info(`Game loaded: ${elapsed(begining)}s`);
+
+    void this._sceneManagement.state.updateCurState(
+      process.env.startSceneNumber as unknown as Scenes
+    );
 
     // Register a render loop to repeatedly render the scene
     this._engine.runRenderLoop(() => {
@@ -52,16 +55,10 @@ export class Game {
     });
   }
 
-  // Enable physics
-  protected async _initPhysics() {
-    this._physics = await AmmoModule();
-  }
-
   private async _loadEngines(): Promise<void> {
     this._engine.displayLoadingUI();
 
-    // (process.env.PORTFOLIO as unknown as EnvVarsMap['load'])
-    const assetsManagerContainers = new AssetsLoader(this._sceneManagement, this._physics).init();
+    const assetsManagerContainers = new AssetsLoader(this._sceneManagement).init();
 
     // specific order has to be mentained as specified/defined in sceneManagement in ScenesWithStates
     const engines: Promise<GameSceneEngine>[] = [
@@ -95,10 +92,7 @@ export class Game {
       ).init(),
     ];
 
-    this._sceneManagement.importEngines(
-      process.env.startSceneNumber as unknown as number,
-      await Promise.all(engines)
-    );
+    this._sceneManagement.importEngines(await Promise.all(engines));
 
     this._engine.hideLoadingUI();
   }

@@ -10,15 +10,16 @@ export class SceneManagement {
     this._engine = engine;
 
     // automatic scene object generator
-    this.scenes.fill({ scene: new Scene(this._engine), engine: {} }, 0, Object.keys(Scenes).length);
+    const length = Object.keys(Scenes).length / 2;
+    this.scenes = new Array(length).fill(null).map(() => ({ scene: new Scene(this._engine) }));
+
+    this.state = new StateManagement(this.scenes);
   }
 
-  public importEngines(initState: Scenes, loadedEngines: GameSceneEngine[]) {
+  public importEngines(loadedEngines: GameSceneEngine[]) {
     loadedEngines.forEach((engine, key) => {
       this.scenes[key as Scenes].engine = engine;
     });
-
-    this.state = new StateManagement(initState, this.scenes);
   }
 }
 
@@ -28,10 +29,9 @@ export class StateManagement {
 
   private _scenes: SceneData[];
 
-  constructor(initState: Scenes, scenes: SceneData[]) {
+  constructor(scenes: SceneData[]) {
     this._scenes = scenes;
     registerShader();
-    void this.updateCurState(initState);
   }
 
   get cur(): Scenes {
@@ -50,12 +50,12 @@ export class StateManagement {
     if (wasPrevState) {
       this._scenes[this._curState].scene.detachControl();
       await this.transition(1, 0.02);
-      await this._scenes[this._curState].engine.onExit();
+      await this._scenes[this._curState].engine!.onExit();
       this._prevState = this._curState;
     }
 
     this._curState = newState;
-    await this._scenes[this._curState].engine.onEnter();
+    await this._scenes[this._curState].engine!.onEnter();
     await this.transition(0, 0.02);
     this._scenes[this._curState].scene.attachControl();
   }

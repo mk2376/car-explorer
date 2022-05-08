@@ -15,41 +15,36 @@ import { ContainerDefinitions } from 'src/BabylonGame/interfaces';
 
 const gameEngineName = 'portfolio';
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function _createPlayer(this: GameEnginePortfolio) {
+export function _createPlayer(this: GameEnginePortfolio) {
   const begining = now();
 
   this._player = new Player(
     this._canvas,
     this._scene,
-    this._assetContainers.containers[ContainerDefinitions.Player].container as AssetContainer,
+    this._assetContainers.containers[ContainerDefinitions.Player]!.container as AssetContainer,
     this._ui,
-    this.gamePaused,
-    this.Ammo
+    this.gamePaused
   );
   this._player.load();
-  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} player loaded`);
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function _createActionsController(this: GameEnginePortfolio) {
+export function _createActionsController(this: GameEnginePortfolio) {
   const begining = now();
 
   this._actionsController = new actionsControllerPortfolio(
     this._player,
-    this._assetContainers.containers[ContainerDefinitions.PortfolioWorld]
+    this._assetContainers.containers[ContainerDefinitions.PortfolioWorld]!
       .container as AssetContainer,
     this._state
   );
-  await this._scene.whenReadyAsync();
 
   console.info(`${elapsed(begining)} ${gameEngineName} actionsController created`);
 }
 
 //loading sounds for the game scene
-export async function _loadSounds(this: GameEnginePortfolio) {
+export function _loadSounds(this: GameEnginePortfolio) {
   const begining = now();
 
   /*
@@ -68,12 +63,12 @@ export async function _loadSounds(this: GameEnginePortfolio) {
   this._sounds.game = game;
   */
 
-  await this._scene.whenReadyAsync();
-
   console.info(`${elapsed(begining)} ${gameEngineName} sounds loaded`);
 }
 
 export function _createSkyBox(this: GameEnginePortfolio) {
+  const begining = now();
+
   const skybox = MeshBuilder.CreateBox('skyBox', { size: 3000 }, this._scene);
   const skyboxMaterial = new StandardMaterial('skyBox', this._scene);
   skyboxMaterial.backFaceCulling = false;
@@ -93,4 +88,6 @@ export function _createSkyBox(this: GameEnginePortfolio) {
   skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
   skyboxMaterial.specularColor = new Color3(0, 0, 0);
   skybox.material = skyboxMaterial;
+
+  console.info(`${elapsed(begining)} ${gameEngineName} _createSkyBox loaded`);
 }

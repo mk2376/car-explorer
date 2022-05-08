@@ -9,7 +9,7 @@ import { LightsAdventure } from '../Lights/LightsAdventure';
 export function _containerDefinitionPortfolioWorld(this: AssetsLoader) {
   return {
     name: 'portfolioWorld',
-    path: './CarExplorer/modes/portfolioWorld/',
+    path: './CarExplorer/models/portfolioWorld/',
     file: 'portfolioWorld.babylon',
     policy: (
       scene: Scene,
@@ -58,6 +58,22 @@ export function _containerDefinitionPlayer(this: AssetsLoader) {
       AmmoImport: typeof AmmoModule
     ) => {
       this._applyPolicyPlayer(scene, container, lights, AmmoImport);
+    },
+  };
+}
+
+export function _containerDefinitionCoin(this: AssetsLoader) {
+  return {
+    name: 'coin',
+    path: './CarExplorer/models/crystal/',
+    file: 'crystal.babylon',
+    policy: (
+      scene: Scene,
+      container: AssetContainer,
+      lights: Lights,
+      AmmoImport: typeof AmmoModule
+    ) => {
+      //this._applyPolicyPlayer(scene, container, lights, AmmoImport);
     },
   };
 }

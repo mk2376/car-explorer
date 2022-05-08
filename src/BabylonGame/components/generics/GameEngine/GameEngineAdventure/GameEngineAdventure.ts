@@ -72,7 +72,7 @@ export class GameEngineAdventure extends GameEngine {
 
   private async _lazyLoading() {
     if (!this._assetContainers.loaded) {
-      await this._assetContainers.waitContainerTasksToLoad();
+      // TODO: update as in Portfolio
       await this._createPlayer();
       await this._createActionsController();
       await this._createCoinController(4); // has to be initialized after createActionsController as he creates 'new ActionManager'

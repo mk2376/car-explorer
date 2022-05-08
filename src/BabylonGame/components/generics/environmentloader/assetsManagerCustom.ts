@@ -1,12 +1,16 @@
-import { AssetContainer, AssetsManager, Engine, Scene } from '@babylonjs/core';
+import { AssetsManager, Scene } from '@babylonjs/core';
+import { ContainerData } from 'src/BabylonGame/interfaces';
+import { Lights } from '../Lights/Lights';
+import { Physics } from '../../physics';
 
 export class AssetsManagerCustom {
   protected _scene: Scene;
   protected _assetsManager: AssetsManager;
-  protected _toLoad!: Promise<void>;
+  protected _lights: Lights;
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, lights: Lights) {
     this._scene = scene;
+    this._lights = lights;
     const engine = this._scene.getEngine();
     this._assetsManager = new AssetsManager(this._scene);
 
@@ -25,26 +29,30 @@ export class AssetsManagerCustom {
     };
   }
 
-  // start loading
-  public load() {
-    this._toLoad = this._assetsManager.loadAsync();
+  // load
+  public async load() {
+    await this._assetsManager.loadAsync();
   }
 
-  // wait till loading finished
-  public async onLoad() {
-    await this._toLoad;
-  }
-
-  public addContainerTask(
-    containerName: string,
-    path: string,
-    file: string,
-    container: AssetContainer
-  ): void {
-    const task = this._assetsManager.addContainerTask(containerName, '', path, file);
+  public addContainerTask(containerData: ContainerData): void {
+    const task = this._assetsManager.addContainerTask(
+      containerData.name,
+      '',
+      containerData.path,
+      containerData.file
+    );
 
     task.onSuccess = (task) => {
-      container = task.loadedContainer;
+      console.warn(`${containerData.file} loaded`);
+
+      containerData.container = task.loadedContainer;
+
+      containerData.policy(
+        this._scene,
+        containerData.container,
+        this._lights,
+        Physics.getInstance()
+      );
     };
   }
 }

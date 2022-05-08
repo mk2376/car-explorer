@@ -40,10 +40,12 @@ export class GameEngine {
     this._scene.detachControl();
 
     // fake camera, to prevent errors -- TODO: Try to remove in the future
+    /*
     const camera = new FreeCamera('camera1', new Vector3(0, 5, -10), this._scene);
 
     camera.setTarget(Vector3.Zero());
     camera.attachControl(this._canvas, true);
+    */
   }
 
   get gamePaused(): boolean {

@@ -151,7 +151,7 @@ function __impostorPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
           this._scene
         );
 
-        const physicsHelper = new PhysicsHelper(this._scene, mesh, this.Ammo);
+        const physicsHelper = new PhysicsHelper(this._scene, mesh, Physics.getInstance());
         physicsHelper.ConvexHullShape();
         mesh.physicsImpostor.physicsBody = physicsHelper.rigidBody(metadata);
         physicsHelper.addRigidBody();

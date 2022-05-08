@@ -1,9 +1,7 @@
 import { Vector3 } from '@babylonjs/core';
-import AmmoModule from 'ammojs-typed';
 import {
   SceneAssetManagerContainers,
   ContainerDefinitions,
-  EnvVarsMap,
   Scenes,
 } from 'src/BabylonGame/interfaces';
 import { now, elapsed } from '../../time';
@@ -12,6 +10,7 @@ import { _applyPolicyWorld } from './policys/_policyWorld';
 import { SceneManagement } from '../../sceneManagement';
 import {
   _containerDefinitionAdventureWorld,
+  _containerDefinitionCoin,
   _containerDefinitionLightsAdventure,
   _containerDefinitionLightsPortfolio,
   _containerDefinitionPlayer,
@@ -24,7 +23,6 @@ import { SceneAssetManagerContainer } from './sceneAssetManagerContainer';
 export class AssetsLoader {
   protected _sceneManagement: SceneManagement;
   protected _assetManagerContainers: SceneAssetManagerContainers;
-  protected Ammo: typeof AmmoModule;
 
   // imported functions
 
@@ -37,10 +35,10 @@ export class AssetsLoader {
   protected _containerDefinitionAdventureWorld = _containerDefinitionAdventureWorld;
   protected _containerDefinitionLightsAdventure = _containerDefinitionLightsAdventure;
   protected _containerDefinitionPlayer = _containerDefinitionPlayer;
+  protected _containerDefinitionCoin = _containerDefinitionCoin;
 
-  constructor(sceneManagement: SceneManagement, AmmoImport: typeof AmmoModule) {
+  constructor(sceneManagement: SceneManagement) {
     this._sceneManagement = sceneManagement;
-    this.Ammo = AmmoImport;
 
     this._assetManagerContainers = {
       [Scenes.PORTFOLIO]: new SceneAssetManagerContainer(
@@ -50,27 +48,31 @@ export class AssetsLoader {
           [ContainerDefinitions.Player]: this._containerDefinitionPlayer(),
           [ContainerDefinitions.Lights]: this._containerDefinitionLightsPortfolio(),
         },
-        process.env.PORTFOLIO as unknown as EnvVarsMap['gravityVector'] as unknown as Vector3,
-        this.Ammo
+        new Vector3(
+          ...process.env.PORTFOLIO_gravityVector!.split(',').map((item) => parseFloat(item))
+        )
       ),
+      /*
       [Scenes.ADVENTURE]: new SceneAssetManagerContainer(
         this._sceneManagement.scenes[Scenes.ADVENTURE].scene,
         {
           [ContainerDefinitions.AdventureWorld]: this._containerDefinitionAdventureWorld(),
           [ContainerDefinitions.Player]: this._containerDefinitionPlayer(),
           [ContainerDefinitions.Lights]: this._containerDefinitionLightsAdventure(),
+          [ContainerDefinitions.Coin]: this._containerDefinitionCoin(),
         },
-        process.env.ADVENTURE as unknown as EnvVarsMap['gravityVector'] as unknown as Vector3,
-        this.Ammo
-      ),
+        new Vector3(
+          ...process.env.ADVENTURE_gravityVector!.split(',').map((item) => parseFloat(item))
+        )
+      ),*/
     };
   }
 
   public init() {
-    Object.keys(this._assetManagerContainers).forEach((_, assetContainersIndex) => {
-      const assetContainer = this._assetManagerContainers[assetContainersIndex as Scenes];
+    Object.keys(this._assetManagerContainers).forEach((assetContainersIndex: unknown) => {
+      const assetContainer = this._assetManagerContainers[assetContainersIndex as Scenes]!;
 
-      if (assetContainer) assetContainer.loadAllContainerTasks();
+      assetContainer.loadAllContainerTasks();
     });
 
     return this._assetManagerContainers;

@@ -8,10 +8,6 @@ import { SceneAssetManagerContainer } from './components/generics/environmentloa
 // empty objects realized using:
 export type EmptyObject = Record<string, never>;
 
-export interface EnvVarsMap {
-  [key: string]: string;
-}
-
 export interface Sounds {
   [key: string]: Sound;
 }
@@ -64,7 +60,7 @@ export enum Scenes {
 
 export interface SceneData {
   scene: Scene;
-  engine: GameSceneEngine;
+  engine?: GameSceneEngine;
 }
 
 export enum ContainerDefinitions {
