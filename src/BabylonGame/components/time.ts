@@ -12,3 +12,13 @@ export const elapsed = (beginning: number) => {
 
   return durationString;
 };
+
+// Function that waits for function or value to be true
+export function until(conditionFunction: () => boolean) {
+  const poll = (resolve: (value: unknown) => void) => {
+    if (conditionFunction()) resolve(undefined);
+    else setTimeout((_) => poll(resolve), 120);
+  };
+
+  return new Promise(poll);
+}

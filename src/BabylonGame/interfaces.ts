@@ -3,7 +3,7 @@ import { GameEngine } from './components/generics/GameEngine/GameEngine';
 import { Lights } from './components/generics/Lights/Lights';
 import { SimpleSceneEngine } from './simpleScenes/simpleSceneEngine';
 import AmmoModule from 'ammojs-typed';
-import { SceneAssetManagerContainer } from './components/generics/environmentloader/sceneAssetManagerContainer';
+import { SceneAssetManagerContainer } from './components/generics/environmentLoader/sceneAssetManagerContainer';
 
 // empty objects realized using:
 export type EmptyObject = Record<string, never>;

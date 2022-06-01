@@ -5,6 +5,7 @@ import AmmoModule from 'ammojs-typed';
 import { LightsPortfolio } from '../Lights/LightsPortfolio';
 import { Scenes } from 'src/BabylonGame/interfaces';
 import { LightsAdventure } from '../Lights/LightsAdventure';
+import { LightsCutscene } from '../Lights/LightsCutscene';
 
 export function _containerDefinitionPortfolioWorld(this: AssetsLoader) {
   return {
@@ -73,7 +74,11 @@ export function _containerDefinitionCoin(this: AssetsLoader) {
       lights: Lights,
       AmmoImport: typeof AmmoModule
     ) => {
-      //this._applyPolicyPlayer(scene, container, lights, AmmoImport);
+      this._applyPolicyCutscene(scene, container, lights, AmmoImport);
     },
   };
+}
+
+export function _containerDefinitionLightsCutscene(this: AssetsLoader) {
+  return new LightsCutscene(this._sceneManagement.scenes[Scenes.CUTSCENE].scene);
 }

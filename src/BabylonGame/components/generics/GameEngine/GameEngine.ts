@@ -5,7 +5,7 @@ import { Hud } from '../ui/ui';
 import AmmoModule from 'ammojs-typed';
 import { StateManagement } from '../../sceneManagement';
 import { actionsController } from '../actionsController/actionsController';
-import { SceneAssetManagerContainer } from '../environmentloader/sceneAssetManagerContainer';
+import { SceneAssetManagerContainer } from '../environmentLoader/sceneAssetManagerContainer';
 
 export class GameEngine {
   protected _canvas: HTMLCanvasElement;
@@ -38,14 +38,6 @@ export class GameEngine {
     this._ui = new Hud(this._scene, this._state, this._gamePaused);
 
     this._scene.detachControl();
-
-    // fake camera, to prevent errors -- TODO: Try to remove in the future
-    /*
-    const camera = new FreeCamera('camera1', new Vector3(0, 5, -10), this._scene);
-
-    camera.setTarget(Vector3.Zero());
-    camera.attachControl(this._canvas, true);
-    */
   }
 
   get gamePaused(): boolean {

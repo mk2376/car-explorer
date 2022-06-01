@@ -14,7 +14,7 @@ import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
 import { GameSceneEngine, Scenes } from 'src/BabylonGame/interfaces';
 import { now, elapsed } from '../../../time';
 import { AdventureHud } from '../../ui/adventureUi';
-import { SceneAssetManagerContainer } from '../../environmentloader/sceneAssetManagerContainer';
+import { SceneAssetManagerContainer } from '../../environmentLoader/sceneAssetManagerContainer';
 
 export class GameEngineAdventure extends GameEngine {
   public _ui: AdventureHud;

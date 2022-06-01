@@ -7,6 +7,7 @@ import { GameEngineAdventure } from './GameEngineAdventure';
 import { ContainerDefinitions } from 'src/BabylonGame/interfaces';
 
 const gameEngineName = 'adventure';
+const coinMeshName = 'objectType:coin';
 
 export function _createPlayer(this: GameEngineAdventure) {
   const begining = now();
@@ -41,7 +42,7 @@ export function _createCoinController(this: GameEngineAdventure, numOfCoins: num
 
   this._coinController = new coinController(
     this._ui,
-    'objectType:coin',
+    coinMeshName,
     this._player.chassisMesh,
     numOfCoins
   );

@@ -13,8 +13,8 @@ import { loseScene } from './simpleScenes/scenes/loseScene';
 import { winScene } from './simpleScenes/scenes/winScene';
 import { GameSceneEngine, Scenes } from './interfaces';
 import { now, elapsed } from './components/time';
-import { AssetsLoader } from './components/generics/environmentloader/assetsLoader';
-import { SceneAssetManagerContainer } from './components/generics/environmentloader/sceneAssetManagerContainer';
+import { AssetsLoader } from './components/generics/environmentLoader/assetsLoader';
+import { SceneAssetManagerContainer } from './components/generics/environmentLoader/sceneAssetManagerContainer';
 
 // Game class is the entire game application
 export class Game {
@@ -45,6 +45,7 @@ export class Game {
     console.groupEnd();
     console.info(`Game loaded: ${elapsed(begining)}s`);
 
+    // Set starting scene from environment
     void this._sceneManagement.state.updateCurState(
       process.env.startSceneNumber as unknown as Scenes
     );
@@ -74,7 +75,8 @@ export class Game {
       ).init(),
       new cutScene(
         this._sceneManagement.scenes[Scenes.CUTSCENE].scene,
-        this._sceneManagement.state
+        this._sceneManagement.state,
+        assetsManagerContainers[Scenes.CUTSCENE] as SceneAssetManagerContainer
       ).init(),
       new GameEngineAdventure(
         this.canvas,

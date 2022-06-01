@@ -1,22 +1,24 @@
 import { Scene } from '@babylonjs/core';
 import { Button, Control } from '@babylonjs/gui';
+import { SceneAssetManagerContainer } from 'src/BabylonGame/components/generics/environmentLoader/sceneAssetManagerContainer';
 import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
+import { elapsed, now, until } from 'src/BabylonGame/components/time';
 import { Scenes } from 'src/BabylonGame/interfaces';
 import { SimpleSceneEngine } from '../simpleSceneEngine';
 
 export class cutScene extends SimpleSceneEngine {
-  constructor(scene: Scene, state: StateManagement) {
-    super(scene, state);
+  constructor(scene: Scene, state: StateManagement, assetContainers: SceneAssetManagerContainer) {
+    super(scene, state, assetContainers);
 
-    // this.background();
     this.dialog();
-    this.skipButton();
     this.progressButton();
+    this.skipButton();
     // this._loadSounds();
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   public async init() {
-    await this._scene.whenReadyAsync();
+    void this._lazyLoading();
 
     return this;
   }
@@ -26,19 +28,6 @@ export class cutScene extends SimpleSceneEngine {
     const canplay = false;
     const finished_anim = false;
     let anims_loaded = 0;
-
-    //skip cutscene
-    const skipBtn = Button.CreateSimpleButton('skip', 'SKIP');
-    skipBtn.fontFamily = 'Viga';
-    skipBtn.width = '45px';
-    skipBtn.left = '-14px';
-    skipBtn.height = '40px';
-    skipBtn.color = 'white';
-    skipBtn.top = '14px';
-    skipBtn.thickness = 0;
-    skipBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-    skipBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    this._ui.addControl(skipBtn);
 
     //--PLAYING ANIMATIONS--
     let animTimer: ReturnType<typeof setInterval>;
@@ -91,5 +80,24 @@ export class cutScene extends SimpleSceneEngine {
     next.onPointerUpObservable.add(() => {
       //
     });
+  }
+
+  private async _lazyLoading() {
+    const begining = now();
+
+    if (!this._assetContainers!.loaded) await until(() => this._assetContainers!.loaded);
+    this._assetContainers!.addAllToScene();
+
+    this._loaded = true;
+    console.info(`${elapsed(begining)} _lazyLoading finished`);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  public async onEnter() {
+    await until(() => this._loaded);
+    await this._scene.whenReadyAsync();
+
+    //--SOUNDS--
+    // this._sounds.game.play(); // play the gamesong
   }
 }

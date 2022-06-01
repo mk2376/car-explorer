@@ -1,4 +1,4 @@
-import { AssetsManager, Scene } from '@babylonjs/core';
+import { AssetsManager, ContainerAssetTask, Scene } from '@babylonjs/core';
 import { ContainerData } from 'src/BabylonGame/interfaces';
 import { Lights } from '../Lights/Lights';
 import { Physics } from '../../physics';
@@ -20,13 +20,6 @@ export class AssetsManagerCustom {
       engine.loadingUIText = `We are loading the scene. Loading ${lastFinishedTask.name} container.`;
     };
     */
-
-    this._assetsManager.onTaskError = function (task) {
-      engine.loadingUIText = `There was an error when loading assets.\n${String(
-        task.errorObject.message
-      )}`;
-      console.log(task.errorObject.message, task.errorObject.exception);
-    };
   }
 
   // load
@@ -44,6 +37,7 @@ export class AssetsManagerCustom {
 
     task.onSuccess = (task) => {
       console.warn(`${containerData.file} loaded`);
+      if (!task.loadedContainer) throw new Error('containerData.container is empty');
 
       containerData.container = task.loadedContainer;
 
@@ -52,6 +46,15 @@ export class AssetsManagerCustom {
         containerData.container,
         this._lights,
         Physics.getInstance()
+      );
+    };
+
+    // better than onTaskError
+    task.onError = (task: ContainerAssetTask, message: string | undefined, exception: string) => {
+      console.error(
+        `Error when trying to load container task ${task.name},\nmessage: ${
+          message as string
+        },\nexception: ${exception}`
       );
     };
   }

@@ -11,7 +11,7 @@ export class SceneAssetManagerContainer {
   readonly containers: Containers;
   protected containersLoaded = false;
 
-  constructor(scene: Scene, containers: Containers, gravityVector: Vector3 | undefined) {
+  constructor(scene: Scene, containers: Containers, gravityVector?: Vector3) {
     this._scene = scene;
     this.containers = containers;
     this._assetsManager = new AssetsManagerCustom(
@@ -19,7 +19,7 @@ export class SceneAssetManagerContainer {
       this.containers[ContainerDefinitions.Lights] as Lights
     );
 
-    if (gravityVector instanceof Vector3) Physics.enablePhysics(this._scene, gravityVector);
+    if (gravityVector) Physics.enablePhysics(this._scene, gravityVector);
   }
 
   get loaded() {
@@ -42,7 +42,7 @@ export class SceneAssetManagerContainer {
     Object.keys(this.containers).forEach((containersIndex: unknown) => {
       const containerData = this.containers[containersIndex as ContainerDefinitions];
 
-      if (instanceOfContainerData(containerData)) {
+      if (isInstanceOfContainerData(containerData)) {
         this._assetsManager.addContainerTask(containerData);
       }
     });
@@ -55,6 +55,6 @@ export class SceneAssetManagerContainer {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function instanceOfContainerData(containerData: any): containerData is ContainerData {
+function isInstanceOfContainerData(containerData: any): containerData is ContainerData {
   return 'file' in containerData;
 }

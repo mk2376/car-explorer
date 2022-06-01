@@ -3,8 +3,8 @@ import { GameSceneEngine } from '../../../../interfaces';
 import { GameEngine } from '../GameEngine';
 import { StateManagement } from '../../../sceneManagement';
 import { _createActionsController, _createPlayer, _createSkyBox, _loadSounds } from './loaders';
-import { elapsed, now } from '../../../time';
-import { SceneAssetManagerContainer } from '../../environmentloader/sceneAssetManagerContainer';
+import { elapsed, now, until } from '../../../time';
+import { SceneAssetManagerContainer } from '../../environmentLoader/sceneAssetManagerContainer';
 
 export class GameEnginePortfolio extends GameEngine {
   protected _loaded = false;
@@ -58,13 +58,4 @@ export class GameEnginePortfolio extends GameEngine {
     //--SOUNDS--
     // this._sounds.game.play(); // play the gamesong
   }
-}
-
-function until(conditionFunction: () => boolean) {
-  const poll = (resolve: (value: unknown) => void) => {
-    if (conditionFunction()) resolve(undefined);
-    else setTimeout((_) => poll(resolve), 10);
-  };
-
-  return new Promise(poll);
 }

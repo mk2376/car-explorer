@@ -5,6 +5,7 @@ import {
   Scenes,
 } from 'src/BabylonGame/interfaces';
 import { now, elapsed } from '../../time';
+import { _applyPolicyCutscene } from './policys/_policyCutscene';
 import { _applyPolicyPlayer } from './policys/_policyPlayer';
 import { _applyPolicyWorld } from './policys/_policyWorld';
 import { SceneManagement } from '../../sceneManagement';
@@ -12,6 +13,7 @@ import {
   _containerDefinitionAdventureWorld,
   _containerDefinitionCoin,
   _containerDefinitionLightsAdventure,
+  _containerDefinitionLightsCutscene,
   _containerDefinitionLightsPortfolio,
   _containerDefinitionPlayer,
   _containerDefinitionPortfolioWorld,
@@ -26,21 +28,31 @@ export class AssetsLoader {
 
   // imported functions
 
+  // policys to apply
+  protected _applyPolicyCutscene = _applyPolicyCutscene;
   protected _applyPolicyWorld = _applyPolicyWorld;
   protected _applyPolicyPlayer = _applyPolicyPlayer;
 
   // containerDefinitions
+  protected _containerDefinitionCoin = _containerDefinitionCoin;
+  protected _containerDefinitionLightsCutscene = _containerDefinitionLightsCutscene;
   protected _containerDefinitionPortfolioWorld = _containerDefinitionPortfolioWorld;
   protected _containerDefinitionLightsPortfolio = _containerDefinitionLightsPortfolio;
   protected _containerDefinitionAdventureWorld = _containerDefinitionAdventureWorld;
   protected _containerDefinitionLightsAdventure = _containerDefinitionLightsAdventure;
   protected _containerDefinitionPlayer = _containerDefinitionPlayer;
-  protected _containerDefinitionCoin = _containerDefinitionCoin;
 
   constructor(sceneManagement: SceneManagement) {
     this._sceneManagement = sceneManagement;
 
     this._assetManagerContainers = {
+      [Scenes.CUTSCENE]: new SceneAssetManagerContainer(
+        this._sceneManagement.scenes[Scenes.CUTSCENE].scene,
+        {
+          [ContainerDefinitions.Coin]: this._containerDefinitionCoin(),
+          [ContainerDefinitions.Lights]: this._containerDefinitionLightsCutscene(),
+        }
+      ),
       [Scenes.PORTFOLIO]: new SceneAssetManagerContainer(
         this._sceneManagement.scenes[Scenes.PORTFOLIO].scene,
         {
@@ -57,8 +69,8 @@ export class AssetsLoader {
         {
           [ContainerDefinitions.AdventureWorld]: this._containerDefinitionAdventureWorld(),
           [ContainerDefinitions.Player]: this._containerDefinitionPlayer(),
-          [ContainerDefinitions.Lights]: this._containerDefinitionLightsAdventure(),
           [ContainerDefinitions.Coin]: this._containerDefinitionCoin(),
+          [ContainerDefinitions.Lights]: this._containerDefinitionLightsAdventure(),
         },
         new Vector3(
           ...process.env.ADVENTURE_gravityVector!.split(',').map((item) => parseFloat(item))
