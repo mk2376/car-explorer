@@ -16,7 +16,7 @@ export function events(engine: Engine, sceneManagement: SceneManagement): void {
         sceneManagement.scenes[curState].scene.debugLayer.show();
       }
     }
-  });
+  }); // eslint-disable-next-line @typescript-eslint/unbound-method
 
   //resize if the screen is resized/rotated
   window.addEventListener('resize', () => {

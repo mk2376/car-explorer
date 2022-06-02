@@ -26,6 +26,7 @@ export class startScene extends SimpleSceneEngine {
 
   protected background() {
     const startbg = new Image('startbg', './CarExplorer/sprites/background/startScene.jpg');
+    startbg.autoScale = true;
     this._ui.addControl(startbg);
   }
 

@@ -1,8 +1,8 @@
 import { AbstractMesh, AssetContainer, PhysicsImpostor, Scene } from '@babylonjs/core';
-import { Lights } from '../../Lights/Lights';
-import { AssetsLoader } from '../assetsLoader';
-import { parseMetadata } from '../parseMetadata';
-import { PhysicsHelper } from '../PhysicsHelper';
+import { Lights } from '../../../Lights/Lights';
+import { AssetsLoader } from '../../assetsLoader';
+import { parseMetadata } from '../../parseMetadata';
+import { PhysicsHelper } from '../../PhysicsHelper';
 import AmmoModule from 'ammojs-typed';
 
 let Ammo: typeof AmmoModule;

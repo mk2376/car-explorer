@@ -1,6 +1,6 @@
 import { AbstractMesh, AssetContainer, Scene, Vector3 } from '@babylonjs/core';
-import { Lights } from '../../Lights/Lights';
-import { AssetsLoader } from '../assetsLoader';
+import { Lights } from '../../../../Lights/Lights';
+import { AssetsLoader } from '../../../assetsLoader';
 import AmmoModule from 'ammojs-typed';
 
 let Ammo: typeof AmmoModule;
@@ -27,8 +27,5 @@ export function _applyPolicyCutscene(
 }
 
 export function __meshPolicyCutscene(mesh: AbstractMesh, container: AssetContainer) {
-  // console.log(mesh.name);
-
   mesh.receiveShadows = true;
-  mesh.position = new Vector3(0, 0, 0);
 }

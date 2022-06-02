@@ -5,20 +5,18 @@ import {
   Scenes,
 } from 'src/BabylonGame/interfaces';
 import { now, elapsed } from '../../time';
-import { _applyPolicyCutscene } from './policys/_policyCutscene';
-import { _applyPolicyPlayer } from './policys/_policyPlayer';
-import { _applyPolicyWorld } from './policys/_policyWorld';
+import { _applyPolicyCutscene } from './containerDefinitions/scene/cutscene/_policyCutscene';
+import { _applyPolicyPlayer } from './containerDefinitions/shared/player/_policyPlayer';
+import { _applyPolicyWorld } from './containerDefinitions/scene/_policyWorld';
 import { SceneManagement } from '../../sceneManagement';
-import {
-  _containerDefinitionAdventureWorld,
-  _containerDefinitionCoin,
-  _containerDefinitionLightsAdventure,
-  _containerDefinitionLightsCutscene,
-  _containerDefinitionLightsPortfolio,
-  _containerDefinitionPlayer,
-  _containerDefinitionPortfolioWorld,
-} from './containerDefinitions';
 import { SceneAssetManagerContainer } from './sceneAssetManagerContainer';
+import { _containerDefinition, _containerDefinitionLights } from './containerDefinition';
+import { LightsCutscene } from '../Lights/LightsCutscene';
+import { _containerDefinitionPortfolioWorld } from './containerDefinitions/scene/portfolio/portfolioWorld';
+import { _containerDefinitionAdventureWorld } from './containerDefinitions/scene/adventure/adventureWorld';
+import { _containerDefinitionPlayer } from './containerDefinitions/shared/player/player';
+import { LightsPortfolio } from '../Lights/LightsPortfolio';
+import { LightsAdventure } from '../Lights/LightsAdventure';
 
 // AssetsLoader loads assets(babylon exports) (enables physics on them), applies policies to them and adds lights.
 // (basicaly everything that is possible to be done in Container is done here)
@@ -33,13 +31,13 @@ export class AssetsLoader {
   protected _applyPolicyWorld = _applyPolicyWorld;
   protected _applyPolicyPlayer = _applyPolicyPlayer;
 
-  // containerDefinitions
-  protected _containerDefinitionCoin = _containerDefinitionCoin;
-  protected _containerDefinitionLightsCutscene = _containerDefinitionLightsCutscene;
+  // generic containerDefinitions
+  protected _containerDefinition = _containerDefinition;
+  protected _containerDefinitionLights = _containerDefinitionLights;
+
+  // specific containerDefinitions
   protected _containerDefinitionPortfolioWorld = _containerDefinitionPortfolioWorld;
-  protected _containerDefinitionLightsPortfolio = _containerDefinitionLightsPortfolio;
   protected _containerDefinitionAdventureWorld = _containerDefinitionAdventureWorld;
-  protected _containerDefinitionLightsAdventure = _containerDefinitionLightsAdventure;
   protected _containerDefinitionPlayer = _containerDefinitionPlayer;
 
   constructor(sceneManagement: SceneManagement) {
@@ -49,16 +47,26 @@ export class AssetsLoader {
       [Scenes.CUTSCENE]: new SceneAssetManagerContainer(
         this._sceneManagement.scenes[Scenes.CUTSCENE].scene,
         {
-          [ContainerDefinitions.Coin]: this._containerDefinitionCoin(),
-          [ContainerDefinitions.Lights]: this._containerDefinitionLightsCutscene(),
+          [ContainerDefinitions.Coin]: this._containerDefinition(
+            'cutcene coin',
+            './CarExplorer/models/shared/crystal/crystal.babylon',
+            _applyPolicyCutscene
+          ),
+          [ContainerDefinitions.Lights]: this._containerDefinitionLights(
+            LightsCutscene,
+            Scenes.CUTSCENE
+          ),
         }
       ),
       [Scenes.PORTFOLIO]: new SceneAssetManagerContainer(
         this._sceneManagement.scenes[Scenes.PORTFOLIO].scene,
         {
-          [ContainerDefinitions.PortfolioWorld]: this._containerDefinitionPortfolioWorld(),
+          [ContainerDefinitions.Scene]: this._containerDefinitionPortfolioWorld(),
           [ContainerDefinitions.Player]: this._containerDefinitionPlayer(),
-          [ContainerDefinitions.Lights]: this._containerDefinitionLightsPortfolio(),
+          [ContainerDefinitions.Lights]: this._containerDefinitionLights(
+            LightsPortfolio,
+            Scenes.PORTFOLIO
+          ),
         },
         new Vector3(
           ...process.env.PORTFOLIO_gravityVector!.split(',').map((item) => parseFloat(item))
@@ -67,10 +75,13 @@ export class AssetsLoader {
       [Scenes.ADVENTURE]: new SceneAssetManagerContainer(
         this._sceneManagement.scenes[Scenes.ADVENTURE].scene,
         {
-          [ContainerDefinitions.AdventureWorld]: this._containerDefinitionAdventureWorld(),
+          [ContainerDefinitions.Scene]: this._containerDefinitionAdventureWorld(),
           [ContainerDefinitions.Player]: this._containerDefinitionPlayer(),
           [ContainerDefinitions.Coin]: this._containerDefinitionCoin(),
-          [ContainerDefinitions.Lights]: this._containerDefinitionLightsAdventure(),
+          [ContainerDefinitions.Lights]: this._containerDefinitionLights(
+            LightsAdventure,
+            Scenes.ADVENTURE
+          ),
         },
         new Vector3(
           ...process.env.ADVENTURE_gravityVector!.split(',').map((item) => parseFloat(item))

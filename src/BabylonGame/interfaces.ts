@@ -32,13 +32,15 @@ export interface ContainerData {
   path: string;
   file: string;
   container?: AssetContainer;
-  policy: (
-    scene: Scene,
-    container: AssetContainer,
-    lights: Lights,
-    AmmoImport: typeof AmmoModule
-  ) => void;
+  policy: applyPolicy;
 }
+
+export type applyPolicy = (
+  scene: Scene,
+  container: AssetContainer,
+  lights: Lights,
+  AmmoImport: typeof AmmoModule
+) => void;
 
 export interface observers {
   speedMeter: Observable<unknown>;
@@ -64,9 +66,13 @@ export interface SceneData {
 }
 
 export enum ContainerDefinitions {
-  Lights = 0,
-  PortfolioWorld,
-  AdventureWorld,
+  Scene = 0,
+  Lights,
+  // additional ones
   Player,
   Coin,
 }
+
+// pass class type instead of class instance
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Constructor<T> = { new (...args: any): unknown };

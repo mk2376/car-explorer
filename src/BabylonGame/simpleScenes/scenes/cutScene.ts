@@ -1,5 +1,5 @@
-import { Scene } from '@babylonjs/core';
-import { Button, Control } from '@babylonjs/gui';
+import { FreeCamera, Scene, UniversalCamera, Vector3 } from '@babylonjs/core';
+import { Button, Control, TextBlock } from '@babylonjs/gui';
 import { SceneAssetManagerContainer } from 'src/BabylonGame/components/generics/environmentLoader/sceneAssetManagerContainer';
 import { StateManagement } from 'src/BabylonGame/components/sceneManagement';
 import { elapsed, now, until } from 'src/BabylonGame/components/time';
@@ -10,10 +10,16 @@ export class cutScene extends SimpleSceneEngine {
   constructor(scene: Scene, state: StateManagement, assetContainers: SceneAssetManagerContainer) {
     super(scene, state, assetContainers);
 
+    this.textBox();
     this.dialog();
     this.progressButton();
     this.skipButton();
     // this._loadSounds();
+
+    // override originCamera from super
+    const camera = new FreeCamera('originCamera', new Vector3(0, 0, 0), scene);
+    camera.setTarget(Vector3.Forward());
+    scene.activeCamera = camera;
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -21,6 +27,19 @@ export class cutScene extends SimpleSceneEngine {
     void this._lazyLoading();
 
     return this;
+  }
+
+  protected textBox() {
+    const text = new TextBlock('description');
+    text.text = 'Crystal';
+    text.color = 'white';
+    text.fontSize = 96;
+    // text._automaticSize = true;
+    text.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    text.paddingRight = 100;
+    // text.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    //text1.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    this._ui.addControl(text);
   }
 
   protected dialog() {
