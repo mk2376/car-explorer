@@ -35,8 +35,7 @@ export function _createActionsController(this: GameEnginePortfolio) {
 
   this._actionsController = new actionsControllerPortfolio(
     this._player,
-    this._assetContainers.containers[ContainerDefinitions.PortfolioWorld]!
-      .container as AssetContainer,
+    this._assetContainers.containers[ContainerDefinitions.Scene]!.container as AssetContainer,
     this._state
   );
 

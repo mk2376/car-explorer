@@ -1,8 +1,17 @@
-import { AbstractMesh, AssetContainer, PhysicsImpostor, Scene } from '@babylonjs/core';
+import {
+  AbstractMesh,
+  AssetContainer,
+  Axis,
+  PhysicsImpostor,
+  Quaternion,
+  Scene,
+  Space,
+  Vector3,
+} from '@babylonjs/core';
 import { Lights } from '../../../Lights/Lights';
 import { AssetsLoader } from '../../assetsLoader';
 import { parseMetadata } from '../../parseMetadata';
-import { PhysicsHelper } from '../../PhysicsHelper';
+import { isObjectAndNotImpostor, PhysicsHelper } from '../../PhysicsHelper';
 import AmmoModule from 'ammojs-typed';
 
 let Ammo: typeof AmmoModule;
@@ -10,7 +19,10 @@ let Ammo: typeof AmmoModule;
 let _scene: Scene;
 let _lights: Lights;
 
-export function _applyPolicyWorld(
+const origin = 'objectType:origin';
+const originGroup = 'objectType:originGroup';
+
+export function _applyPolicyGeneral(
   this: AssetsLoader,
   scene: Scene,
   container: AssetContainer,
@@ -21,17 +33,77 @@ export function _applyPolicyWorld(
   _lights = lights;
   Ammo = AmmoImport;
 
+  // these 2 are special, as we need to initialize grouped objects first
+  const origins = container.meshes.filter((mesh) => mesh.name.includes(origin));
+  const originGroups = container.meshes.filter((mesh) => mesh.name.includes(originGroup));
+
+  origins.forEach((mesh) => {
+    __impostorPolicyOrigin(
+      mesh,
+      new Vector3(0, 0, -2),
+      Quaternion.RotationAxis(Axis.Y, 90).toEulerAngles(),
+      container
+    );
+  });
+
+  originGroups.forEach((mesh) => {
+    __impostorPolicyOriginGroup(mesh, container);
+  });
+
   //Loop through all world environment meshes that were imported
   container.meshes.forEach((mesh) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    __meshPolicyWorld(mesh, container);
-    __impostorPolicyWorld(mesh, container);
+    __impostorPolicyGeneral(mesh, container);
+    __meshPolicyGeneral(mesh, container);
   });
 }
 
-function __impostorPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
-  if (!mesh.name.includes('objectType')) return; // is not a rigidBody
-  if (mesh.physicsImpostor?.type) return; // already has physicsImpostor, if he has not it will return 'undefined'
+export function __impostorPolicyOrigin(
+  mesh: AbstractMesh,
+  newPosition: Vector3,
+  newRotatin: Vector3,
+  container: AssetContainer
+) {
+  if (!isObjectAndNotImpostor(mesh)) return;
+
+  const originalPos = mesh.position;
+  const positionDiference = newPosition.subtract(originalPos);
+
+  mesh.position = newPosition;
+
+  console.error(mesh.rotation);
+
+  const originalRot = mesh.rotation;
+  const rotationDiference = newRotatin.subtract(originalRot);
+
+  //mesh.rotation = newRotatin;
+  mesh.rotate(Axis.Z, Math.PI / 90, Space.WORLD);
+
+  mesh.getChildMeshes().forEach((childMesh) => {
+    childMesh.position = childMesh.position.add(positionDiference);
+    childMesh.rotation = rotationDiference;
+    __impostorPolicyGeneral(childMesh, container);
+    // if (childMesh.physicsImpostor) childMesh.physicsImpostor.parent = null;
+    // childMesh.parent = null;
+  });
+}
+
+export function __impostorPolicyOriginGroup(mesh: AbstractMesh, container: AssetContainer) {
+  if (!isObjectAndNotImpostor(mesh)) return;
+
+  mesh.getChildMeshes().forEach((childMesh) => {
+    __impostorPolicyGeneral(childMesh, container);
+  });
+
+  mesh.physicsImpostor = new PhysicsImpostor(
+    mesh,
+    PhysicsImpostor.NoImpostor,
+    { mass: 0, friction: 1 },
+    _scene
+  );
+}
+
+export function __impostorPolicyGeneral(mesh: AbstractMesh, container: AssetContainer) {
+  if (!isObjectAndNotImpostor(mesh)) return;
 
   const metadata = parseMetadata(mesh.name);
 
@@ -68,13 +140,6 @@ function __impostorPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
         { mass: metadata.mass, friction: 1 },
         _scene
       );
-      break;
-    case 'coin':
-      /*
-      console.log('coin detected');
-      mesh.ellipsoid = new Vector3(5, 7, 5);
-      mesh.checkCollisions = true;
-      */
       break;
     case 'cloth':
       mesh.physicsImpostor = new PhysicsImpostor(
@@ -165,7 +230,7 @@ function __impostorPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
     )[0];
 */
 
-function __meshPolicyWorld(mesh: AbstractMesh, container: AssetContainer) {
+export function __meshPolicyGeneral(mesh: AbstractMesh, container: AssetContainer) {
   // console.log(mesh.name);
 
   try {

@@ -14,10 +14,10 @@ export function _containerDefinition(
   const pathCopy = String(path);
   const lastIndex = pathCopy.lastIndexOf('/');
 
-  if (lastIndex !== -1)
+  if (lastIndex == -1)
     throw new Error("_containerDefinition path improperly defined, no '/' present");
 
-  path = pathCopy.slice(0, lastIndex);
+  path = pathCopy.slice(0, lastIndex) + '/';
   const file = pathCopy.slice(lastIndex + 1);
 
   return {

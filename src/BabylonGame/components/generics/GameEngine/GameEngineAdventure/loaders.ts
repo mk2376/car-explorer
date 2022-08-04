@@ -29,8 +29,7 @@ export function _createActionsController(this: GameEngineAdventure) {
 
   this._actionsController = new actionsControllerAdventure(
     this._player,
-    this._assetContainers.containers[ContainerDefinitions.AdventureWorld]!
-      .container as AssetContainer,
+    this._assetContainers.containers[ContainerDefinitions.Scene]!.container as AssetContainer,
     this._state
   );
 

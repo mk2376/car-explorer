@@ -7,9 +7,7 @@ let Ammo: typeof AmmoModule;
 export class PhysicsHelper {
   private _scene: Scene;
   private _mesh: AbstractMesh;
-  private _shape!:
-    | AmmoModule.btConvexHullShape
-    | AmmoModule.btBvhTriangleMeshShape;
+  private _shape!: AmmoModule.btConvexHullShape | AmmoModule.btBvhTriangleMeshShape;
   private _rigidBody!: AmmoModule.btRigidBody;
 
   constructor(scene: Scene, mesh: AbstractMesh, AmmoImport: typeof AmmoModule) {
@@ -104,11 +102,7 @@ export class PhysicsHelper {
 
     transform.setIdentity();
     transform.setOrigin(
-      new Ammo.btVector3(
-        this._mesh.position.x,
-        this._mesh.position.y,
-        this._mesh.position.z
-      )
+      new Ammo.btVector3(this._mesh.position.x, this._mesh.position.y, this._mesh.position.z)
     );
     transform.setRotation(
       new Ammo.btQuaternion(
@@ -135,10 +129,15 @@ export class PhysicsHelper {
 
   private _addRigidBody() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const physicsWorld = this._scene
-      .getPhysicsEngine()!
-      .getPhysicsPlugin().world;
+    const physicsWorld = this._scene.getPhysicsEngine()!.getPhysicsPlugin().world;
     // eslint-disable-next-line
     physicsWorld.addRigidBody(this._rigidBody);
   }
+}
+
+export function isObjectAndNotImpostor(mesh: AbstractMesh) {
+  if (!mesh.name.includes('objectType')) return false; // is not a rigidBody
+  if (mesh.physicsImpostor?.type) return false; // already has physicsImpostor, if he has not it will return 'undefined'
+
+  return true;
 }

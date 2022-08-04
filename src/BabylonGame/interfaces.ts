@@ -71,6 +71,7 @@ export enum ContainerDefinitions {
   // additional ones
   Player,
   Coin,
+  Portal,
 }
 
 // pass class type instead of class instance

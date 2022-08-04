@@ -1,7 +1,15 @@
-import { AbstractMesh, AssetContainer, Scene, Vector3 } from '@babylonjs/core';
-import { Lights } from '../../../../Lights/Lights';
-import { AssetsLoader } from '../../../assetsLoader';
+import { AssetsLoader } from '../../assetsLoader';
+import { AbstractMesh, AssetContainer, Scene } from '@babylonjs/core';
 import AmmoModule from 'ammojs-typed';
+import { Lights } from '../../../Lights/Lights';
+
+export function _containerDefinitionCoin(this: AssetsLoader) {
+  return this._containerDefinition(
+    'adventure coin',
+    './CarExplorer/models/shared/crystal/crystal.babylon',
+    this._applyPolicyCutscene
+  );
+}
 
 let Ammo: typeof AmmoModule;
 
@@ -28,4 +36,7 @@ export function _applyPolicyCutscene(
 
 export function __meshPolicyCutscene(mesh: AbstractMesh, container: AssetContainer) {
   mesh.receiveShadows = true;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  _lights.addShadowCaster(mesh, true);
 }
